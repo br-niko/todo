@@ -4,7 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>E-Ink Tasks (Todoist)</title>
-  <link rel="manifest" href="manifest.json">
+  <script>
+    // Garante barra final no GitHub Pages (/todo -> /todo/) para caminhos relativos não quebrarem
+    if (location.pathname.endsWith('/todo')) {
+      location.replace(location.pathname + '/' + location.search + location.hash);
+    }
+  </script>
+  <link rel="manifest" href="manifest.json?v=5">
   <link rel="icon" type="image/svg+xml" href="icon.svg">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="apple-touch-icon" href="icon-192.png">
@@ -15,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
   <div id="app" class="container">
@@ -143,11 +149,13 @@
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=5"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').catch(() => {});
+        navigator.serviceWorker.register('./sw.js?v=5').then(reg => {
+          reg.update();
+        }).catch(() => {});
       });
     }
   </script>

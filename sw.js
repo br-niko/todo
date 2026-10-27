@@ -1,10 +1,10 @@
-const CACHE_NAME = 'eink-tasks-v4';
+const CACHE_NAME = 'eink-tasks-v5';
 const ASSETS = [
   './',
   './index.html',
-  './style.css',
-  './app.js',
-  './manifest.json',
+  './style.css?v=5',
+  './app.js?v=5',
+  './manifest.json?v=5',
   './icon.svg',
   './icon-192.png',
   './icon-512.png'
@@ -27,16 +27,26 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
-  if (event.request.method !== 'GET' || event.request.url.includes('api.todoist.com')) {
+  const url = new URL(event.request.url);
+
+  // Ignora requisições de outros domínios (API Todoist, Google Fonts, etc.)
+  if (event.request.method !== 'GET' || url.origin !== self.location.origin) {
     return;
   }
 
-  // Estratégia Network-First para sempre pegar atualizações do GitHub Pages quando online
+  // Não intercepta /todo sem barra final para deixar o navegador seguir o redirect 301 nativo
+  if (url.pathname.endsWith('/todo')) {
+    return;
+  }
+
+  // Estratégia Network-First com cache: 'no-cache' para nunca ficar preso no cache antigo
   event.respondWith(
-    fetch(event.request)
+    fetch(event.request, { cache: 'no-cache' })
       .then(response => {
-        const clone = response.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+        if (response && response.status === 200 && !response.redirected) {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+        }
         return response;
       })
       .catch(() => caches.match(event.request))

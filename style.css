@@ -2,8 +2,7 @@
    E-INK BALANCED STYLESHEET (Boox / Kindle / Kobo / Android E-Ink)
    - Tipografia IBM Plex Sans (+2px sobre o ajuste anterior: base 17px)
    - Linhas finas de 1px
-   - Ícones SVG nítidos com traço forte para E-Ink
-   - Ícones SVG nítidos com traço forte para E-Ink
+   - Ícones SVG nítidos e proporcionais
    - Tags pequenas com retângulo fino em volta na lista de tarefas
    - Zero animações ou transições (evita ghosting e flickering em telas e-ink)
    ========================================================================== */
@@ -49,13 +48,13 @@ html, body {
   min-height: 100vh;
 }
 
-/* ÍCONES SVG NÍTIDOS PARA E-INK */
+/* ÍCONES SVG NÍTIDOS E PROPORCIONAIS AO TRAÇO DE 1PX */
 .icon-svg {
-  width: 17px;
-  height: 17px;
+  width: 16px;
+  height: 16px;
   fill: none;
   stroke: currentColor;
-  stroke-width: 2.3;
+  stroke-width: 1.75;
   stroke-linecap: round;
   stroke-linejoin: round;
   display: block;
@@ -63,9 +62,9 @@ html, body {
 }
 
 .icon-svg.icon-sm {
-  width: 15px;
-  height: 15px;
-  stroke-width: 2.4;
+  width: 14px;
+  height: 14px;
+  stroke-width: 1.85;
 }
 
 /* CABEÇALHO EM LINHA ÚNICA */
@@ -157,7 +156,7 @@ html, body {
 }
 
 .btn-icon {
-  padding: 5px5px;
+  padding: 5px;
   min-width: 32px;
   min-height: 32px;
   font-size: 15px;
@@ -496,10 +495,10 @@ select:focus {
   color: var(--fg);
   border: var(--border-w) solid var(--border);
   border-radius: var(--radius-sm);
-  padding: 4px4px;
+  padding: 4px;
   font-size: 13.5px;
   font-family: inherit;
-  font-weight: 500500;
+  font-weight: 500;
   cursor: pointer;
   min-height: 26px;
   min-width: 26px;

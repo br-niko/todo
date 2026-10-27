@@ -3,7 +3,8 @@
    - Tipografia IBM Plex Sans (+2px sobre o ajuste anterior: base 17px)
    - Linhas finas de 1px
    - Ícones SVG nítidos com traço forte para E-Ink
-   - Tags discretas, legíveis mas sem parecer botões
+   - Ícones SVG nítidos com traço forte para E-Ink
+   - Tags pequenas com retângulo fino em volta na lista de tarefas
    - Zero animações ou transições (evita ghosting e flickering em telas e-ink)
    ========================================================================== */
 
@@ -156,7 +157,7 @@ html, body {
 }
 
 .btn-icon {
-  padding: 5px;
+  padding: 5px5px;
   min-width: 32px;
   min-height: 32px;
   font-size: 15px;
@@ -178,9 +179,9 @@ html, body {
   background-color: var(--bg);
   color: var(--fg);
   border: var(--border-w) solid var(--border);
-  border-radius: 999px;
-  padding: 2px 8px;
-  font-size: 13.5px;
+  border-radius: var(--radius-sm);
+  padding: 2px 7px;
+  font-size: 12.5px;
   font-family: inherit;
   font-weight: 400;
   line-height: 1.25;
@@ -197,7 +198,7 @@ html, body {
 }
 
 .project-count {
-  font-size: 12.5px;
+  font-size: 11.5px;
   opacity: 0.85;
 }
 
@@ -273,10 +274,10 @@ select:focus {
 .chip {
   background-color: var(--bg);
   color: var(--fg);
-  border: none;
-  border-bottom: var(--border-w) dashed var(--border);
-  padding: 1px 4px;
-  font-size: 13.5px;
+  border: var(--border-w) dashed var(--border);
+  border-radius: var(--radius-sm);
+  padding: 1px 5px;
+  font-size: 11.5px;
   font-family: inherit;
   font-weight: 400;
   line-height: 1.2;
@@ -287,6 +288,7 @@ select:focus {
 .chip.selected {
   background-color: var(--fg);
   color: var(--bg);
+  border-style: solid;
 }
 
 .meta-selectors {
@@ -399,7 +401,7 @@ select:focus {
 .task-content-wrap {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
   flex: 1;
   min-width: 0;
 }
@@ -438,50 +440,47 @@ select:focus {
   font-size: 13.5px !important;
 }
 
-/* METADADOS E TAGS DA TAREFA (13px: legível e sem parecer botão) */
+/* METADADOS E TAGS DA TAREFA (Pequenas com retângulo fino em volta) */
 .task-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 5px;
   align-items: center;
-  font-size: 13px;
+  font-size: 11.5px;
   line-height: 1.2;
   font-weight: 400;
 }
 
 .tag-project,
 .tag-label {
-  border: none;
-  padding: 0;
-  font-size: 13px;
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 1px 5px;
+  font-size: 11.5px;
   font-weight: 400;
-  text-decoration: underline;
-  text-decoration-style: dotted;
-  text-underline-offset: 2px;
   cursor: pointer;
 }
 
 .tag-due {
-  font-size: 13px;
+  font-size: 11.5px;
   font-weight: 400;
-  padding: 0;
-  border: none;
+  padding: 1px 5px;
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius-sm);
 }
 
 .tag-due.overdue {
   background-color: var(--fg);
   color: var(--bg);
-  padding: 0 4px;
-  border-radius: 2px;
   font-weight: 500;
 }
 
 .tag-priority {
-  font-size: 12.5px;
+  font-size: 11px;
   font-weight: 600;
-  border: none;
-  border-radius: 2px;
-  padding: 0 4px;
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 1px 5px;
   background-color: var(--fg);
   color: var(--bg);
 }
@@ -497,10 +496,10 @@ select:focus {
   color: var(--fg);
   border: var(--border-w) solid var(--border);
   border-radius: var(--radius-sm);
-  padding: 4px;
+  padding: 4px4px;
   font-size: 13.5px;
   font-family: inherit;
-  font-weight: 500;
+  font-weight: 500500;
   cursor: pointer;
   min-height: 26px;
   min-width: 26px;

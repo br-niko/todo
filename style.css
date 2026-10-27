@@ -1,8 +1,8 @@
 /* ==========================================================================
    E-INK BALANCED STYLESHEET (Boox / Kindle / Kobo / Android E-Ink)
-   - Tipografia IBM Plex Sans em tamanho intermediário equilibrado (15px)
+   - Tipografia IBM Plex Sans (+2px sobre o ajuste anterior: base 17px)
    - Linhas finas de 1px
-   - Tags discretas (11px), legíveis mas sem parecer botões
+   - Tags discretas, legíveis mas sem parecer botões
    - Zero animações ou transições (evita ghosting e flickering em telas e-ink)
    ========================================================================== */
 
@@ -14,7 +14,7 @@
   --radius-sm: 3px;
   --radius-md: 4px;
   --radius-lg: 5px;
-  --font-base: 15px;
+  --font-base: 17px;
   --font-family: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
@@ -66,7 +66,7 @@ html, body {
 }
 
 .header h1 {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
   letter-spacing: -0.01em;
   white-space: nowrap;
@@ -75,7 +75,7 @@ html, body {
 }
 
 .sync-badge {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.02em;
@@ -105,7 +105,7 @@ html, body {
   border: var(--border-w) solid var(--border);
   border-radius: var(--radius-md);
   padding: 5px 10px;
-  font-size: 12.5px;
+  font-size: 14.5px;
   font-family: inherit;
   font-weight: 500;
   cursor: pointer;
@@ -113,14 +113,14 @@ html, body {
   align-items: center;
   justify-content: center;
   gap: 4px;
-  min-height: 30px;
+  min-height: 32px;
   line-height: 1.15;
 }
 
 .btn-sm {
   padding: 4px 8px;
-  font-size: 11.5px;
-  min-height: 26px;
+  font-size: 13.5px;
+  min-height: 28px;
 }
 
 .btn:active,
@@ -137,9 +137,9 @@ html, body {
 
 .btn-icon {
   padding: 4px 8px;
-  min-width: 30px;
-  min-height: 30px;
-  font-size: 13px;
+  min-width: 32px;
+  min-height: 32px;
+  font-size: 15px;
 }
 
 /* BARRA DE FILTROS / TAGS NO TOPO */
@@ -160,7 +160,7 @@ html, body {
   border: var(--border-w) solid var(--border);
   border-radius: 999px;
   padding: 2px 8px;
-  font-size: 11.5px;
+  font-size: 13.5px;
   font-family: inherit;
   font-weight: 400;
   line-height: 1.25;
@@ -177,7 +177,7 @@ html, body {
 }
 
 .project-count {
-  font-size: 10.5px;
+  font-size: 12.5px;
   opacity: 0.85;
 }
 
@@ -212,10 +212,10 @@ select {
   border: var(--border-w) solid var(--border);
   border-radius: var(--radius-sm);
   padding: 5px 8px;
-  font-size: 14px;
+  font-size: 16px;
   font-family: inherit;
   font-weight: 400;
-  min-height: 32px;
+  min-height: 34px;
   outline: none;
 }
 
@@ -256,7 +256,7 @@ select:focus {
   border: none;
   border-bottom: var(--border-w) dashed var(--border);
   padding: 1px 4px;
-  font-size: 11.5px;
+  font-size: 13.5px;
   font-family: inherit;
   font-weight: 400;
   line-height: 1.2;
@@ -279,8 +279,8 @@ select:focus {
 .meta-selectors select,
 .meta-selectors input[type="date"] {
   padding: 2px 6px;
-  font-size: 11.5px;
-  min-height: 26px;
+  font-size: 13.5px;
+  min-height: 28px;
 }
 
 /* AVISOS */
@@ -289,7 +289,7 @@ select:focus {
   border-radius: var(--radius-sm);
   padding: 6px 10px;
   margin-bottom: 8px;
-  font-size: 12.5px;
+  font-size: 14.5px;
   font-weight: 400;
   display: flex;
   justify-content: space-between;
@@ -337,9 +337,9 @@ select:focus {
 }
 
 .task-checkbox {
-  width: 19px;
-  height: 19px;
-  min-width: 19px;
+  width: 21px;
+  height: 21px;
+  min-width: 21px;
   border: var(--border-w) solid var(--border);
   border-radius: var(--radius-sm);
   background-color: var(--bg);
@@ -347,7 +347,7 @@ select:focus {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 14px;
   font-family: inherit;
   font-weight: 600;
   line-height: 1;
@@ -366,12 +366,12 @@ select:focus {
   align-items: center;
   gap: 2px;
   width: 5px;
-  height: 19px;
+  height: 21px;
 }
 
 .countdown-dot {
-  width: 3.5px;
-  height: 3.5px;
+  width: 4px;
+  height: 4px;
   background-color: var(--fg);
   border-radius: 50%;
 }
@@ -385,7 +385,7 @@ select:focus {
 }
 
 .task-title {
-  font-size: 14.5px;
+  font-size: 16.5px;
   font-weight: 400;
   line-height: 1.3;
   word-break: break-word;
@@ -408,23 +408,23 @@ select:focus {
   flex: 1;
   min-width: 130px;
   padding: 4px 8px !important;
-  min-height: 28px !important;
-  font-size: 13.5px !important;
+  min-height: 30px !important;
+  font-size: 15.5px !important;
 }
 
 .task-edit-date {
   padding: 3px 6px !important;
-  min-height: 28px !important;
-  font-size: 11.5px !important;
+  min-height: 30px !important;
+  font-size: 13.5px !important;
 }
 
-/* METADADOS E TAGS DA TAREFA (11px: legível e sem parecer botão) */
+/* METADADOS E TAGS DA TAREFA (13px: legível e sem parecer botão) */
 .task-meta {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   align-items: center;
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.2;
   font-weight: 400;
 }
@@ -433,7 +433,7 @@ select:focus {
 .tag-label {
   border: none;
   padding: 0;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 400;
   text-decoration: underline;
   text-decoration-style: dotted;
@@ -442,7 +442,7 @@ select:focus {
 }
 
 .tag-due {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 400;
   padding: 0;
   border: none;
@@ -457,7 +457,7 @@ select:focus {
 }
 
 .tag-priority {
-  font-size: 10.5px;
+  font-size: 12.5px;
   font-weight: 600;
   border: none;
   border-radius: 2px;
@@ -478,12 +478,12 @@ select:focus {
   border: var(--border-w) solid var(--border);
   border-radius: var(--radius-sm);
   padding: 2px 5px;
-  font-size: 11.5px;
+  font-size: 13.5px;
   font-family: inherit;
   font-weight: 400;
   cursor: pointer;
-  min-height: 24px;
-  min-width: 24px;
+  min-height: 26px;
+  min-width: 26px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -498,7 +498,7 @@ select:focus {
 .empty-state {
   text-align: center;
   padding: 24px 12px;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 400;
   border: var(--border-w) dashed var(--border);
   border-radius: var(--radius-md);
@@ -512,7 +512,7 @@ select:focus {
   border-top: var(--border-w) solid var(--border);
   display: flex;
   justify-content: space-between;
-  font-size: 11.5px;
+  font-size: 13.5px;
   font-weight: 400;
 }
 
@@ -551,7 +551,7 @@ select:focus {
 }
 
 .modal-header h2 {
-  font-size: 14.5px;
+  font-size: 16.5px;
   font-weight: 600;
 }
 
@@ -562,13 +562,13 @@ select:focus {
 }
 
 .help-text {
-  font-size: 11.5px;
+  font-size: 13.5px;
   line-height: 1.25;
 }
 
 .field-label {
   font-weight: 600;
-  font-size: 12.5px;
+  font-size: 14.5px;
 }
 
 .full-input {
@@ -587,7 +587,7 @@ select:focus {
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 400;
 }
 

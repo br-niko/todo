@@ -1,28 +1,29 @@
 /* ==========================================================================
    E-INK OPTIMIZED STYLESHEET (Boox / Kindle / Kobo / Mobile / Desktop)
-   - Alto contraste puro (#000000 sobre #FFFFFF)
+   - Tipografia IBM Plex Sans otimizada para leitura nítida em tela
+   - Linhas finas de 1px (traço leve e elegante)
+   - Tags pequenas e discretas (claramente distintas dos botões)
    - Zero animações ou transições (evita ghosting e flickering em telas e-ink)
-   - Bordas uniformes (1.5px) e cantos sutilmente arredondados
    ========================================================================== */
 
 :root {
   --bg: #ffffff;
   --fg: #000000;
   --border: #000000;
-  --border-w: 1.5px;
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 8px;
-  --font-base: 18px;
-  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --border-w: 1px;
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --font-base: 17px;
+  --font-family: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
 body.font-large {
-  --font-base: 22px;
+  --font-base: 20px;
 }
 
 body.font-xlarge {
-  --font-base: 26px;
+  --font-base: 24px;
 }
 
 * {
@@ -40,14 +41,16 @@ html, body {
   color: var(--fg);
   font-family: var(--font-family);
   font-size: var(--font-base);
+  font-weight: 400;
   line-height: 1.4;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
 }
 
 .container {
   max-width: 820px;
   margin: 0 auto;
-  padding: 16px;
+  padding: 14px;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -59,32 +62,33 @@ html, body {
   justify-content: space-between;
   align-items: center;
   border-bottom: var(--border-w) solid var(--border);
-  padding-bottom: 12px;
-  margin-bottom: 14px;
-  gap: 12px;
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
 .header-title-area {
   display: flex;
   align-items: baseline;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
 .header h1 {
-  font-size: 1.45rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .sync-badge {
-  font-size: 0.78rem;
-  font-weight: 700;
+  font-size: 0.68rem;
+  font-weight: 500;
   text-transform: uppercase;
+  letter-spacing: 0.03em;
   border: var(--border-w) solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 2px 8px;
+  border-radius: 999px;
+  padding: 1px 7px;
 }
 
 .sync-badge.syncing {
@@ -94,30 +98,31 @@ html, body {
 
 .header-actions {
   display: flex;
-  gap: 8px;
+  gap: 6px;
 }
 
-/* BOTÕES PADRÃO E-INK */
+/* BOTÕES PADRÃO E-INK (Retangulares e distintos das tags) */
 .btn {
   background-color: var(--bg);
   color: var(--fg);
   border: var(--border-w) solid var(--border);
   border-radius: var(--radius-md);
-  padding: 8px 14px;
-  font-size: 0.9rem;
-  font-weight: 700;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  font-family: inherit;
+  font-weight: 500;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  min-height: 40px;
+  gap: 5px;
+  min-height: 36px;
 }
 
 .btn-sm {
-  padding: 6px 10px;
-  font-size: 0.82rem;
-  min-height: 34px;
+  padding: 4px 9px;
+  font-size: 0.78rem;
+  min-height: 30px;
 }
 
 .btn:active,
@@ -133,64 +138,67 @@ html, body {
 }
 
 .btn-icon {
-  padding: 6px 10px;
-  min-width: 38px;
-  min-height: 38px;
+  padding: 5px 9px;
+  min-width: 34px;
+  min-height: 34px;
 }
 
-/* BARRA DE PROJETOS E LABELS (# / @) */
+/* BARRA DE FILTROS / TAGS NO TOPO (Pílulas menores e leves) */
 .projects-nav {
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .projects-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
 }
 
 .project-tab {
   background-color: var(--bg);
   color: var(--fg);
   border: var(--border-w) solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 6px 12px;
-  font-size: 0.88rem;
-  font-weight: 700;
+  border-radius: 999px;
+  padding: 2px 9px;
+  font-size: 0.76rem;
+  font-family: inherit;
+  font-weight: 400;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-}
-
-.project-tab.label-tab {
-  border-style: dashed;
+  gap: 4px;
 }
 
 .project-tab.active {
   background-color: var(--fg);
   color: var(--bg);
-  border-style: solid;
+  font-weight: 500;
 }
 
 .project-count {
-  font-size: 0.75rem;
-  border: var(--border-w) solid currentColor;
-  border-radius: var(--radius-sm);
-  padding: 0 5px;
+  font-size: 0.68rem;
+  opacity: 0.8;
+}
+
+.project-count::before {
+  content: "(";
+}
+
+.project-count::after {
+  content: ")";
 }
 
 /* SEÇÃO ADICIONAR TAREFA */
 .add-task-section {
   border: var(--border-w) solid var(--border);
   border-radius: var(--radius-lg);
-  padding: 12px;
-  margin-bottom: 18px;
+  padding: 10px;
+  margin-bottom: 14px;
 }
 
 .input-row {
   display: flex;
-  gap: 8px;
+  gap: 6px;
 }
 
 input[type="text"],
@@ -201,11 +209,11 @@ select {
   color: var(--fg);
   border: var(--border-w) solid var(--border);
   border-radius: var(--radius-md);
-  padding: 7px 10px;
-  font-size: 0.95rem;
+  padding: 6px 10px;
+  font-size: 0.92rem;
   font-family: inherit;
-  font-weight: 600;
-  min-height: 40px;
+  font-weight: 400;
+  min-height: 36px;
   outline: none;
 }
 
@@ -214,7 +222,7 @@ input[type="password"]:focus,
 input[type="date"]:focus,
 select:focus {
   outline: var(--border-w) solid var(--fg);
-  outline-offset: 1px;
+  outline-offset: 0;
 }
 
 #task-input,
@@ -227,26 +235,28 @@ select:focus {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 10px;
-  gap: 10px;
+  margin-top: 8px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
 .quick-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 5px;
   align-items: center;
 }
 
+/* Chips de sugestão de #label: bem pequenos e tracejados */
 .chip {
   background-color: var(--bg);
   color: var(--fg);
   border: var(--border-w) dashed var(--border);
-  border-radius: var(--radius-sm);
-  padding: 4px 10px;
-  font-size: 0.8rem;
-  font-weight: 700;
+  border-radius: 999px;
+  padding: 1px 7px;
+  font-size: 0.7rem;
+  font-family: inherit;
+  font-weight: 400;
   cursor: pointer;
 }
 
@@ -259,29 +269,30 @@ select:focus {
 
 .meta-selectors {
   display: flex;
-  gap: 6px;
+  gap: 5px;
   flex-wrap: wrap;
   align-items: center;
 }
 
 .meta-selectors select,
 .meta-selectors input[type="date"] {
-  padding: 4px 8px;
-  font-size: 0.82rem;
-  min-height: 34px;
+  padding: 2px 6px;
+  font-size: 0.75rem;
+  min-height: 28px;
 }
 
 /* AVISOS */
 .alert-box {
   border: var(--border-w) solid var(--border);
   border-radius: var(--radius-md);
-  padding: 10px 14px;
-  margin-bottom: 16px;
-  font-weight: 700;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .hidden {
@@ -302,31 +313,31 @@ select:focus {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
-  padding: 12px 6px;
+  gap: 10px;
+  padding: 9px 4px;
   border-bottom: var(--border-w) solid var(--border);
 }
 
 .task-left {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: 10px;
   flex: 1;
   min-width: 0;
 }
 
-/* CHECKBOX NÍTIDO PARA E-INK COM CANTOS SUTIS + PONTINHOS DE CONTAGEM */
+/* CHECKBOX FINO E NÍTIDO PARA E-INK + PONTINHOS DE CONTAGEM */
 .task-checkbox-wrap {
   display: flex;
   align-items: center;
-  gap: 5px;
-  margin-top: 1px;
+  gap: 4px;
+  margin-top: 2px;
 }
 
 .task-checkbox {
-  width: 28px;
-  height: 28px;
-  min-width: 28px;
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
   border: var(--border-w) solid var(--border);
   border-radius: var(--radius-sm);
   background-color: var(--bg);
@@ -334,8 +345,9 @@ select:focus {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
-  font-weight: 900;
+  font-size: 0.85rem;
+  font-family: inherit;
+  font-weight: 600;
 }
 
 /* Quando clicado/concluindo: pinta o fundo de preto puro (anti-ghosting) */
@@ -351,29 +363,29 @@ select:focus {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 3px;
-  width: 6px;
-  height: 28px;
+  gap: 2px;
+  width: 5px;
+  height: 22px;
 }
 
 .countdown-dot {
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
   background-color: var(--fg);
-  border-radius: 1px;
+  border-radius: 50%;
 }
 
 .task-content-wrap {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
   flex: 1;
   min-width: 0;
 }
 
 .task-title {
-  font-size: 1.05rem;
-  font-weight: 700;
+  font-size: 0.98rem;
+  font-weight: 500;
   word-break: break-word;
 }
 
@@ -392,63 +404,66 @@ select:focus {
 
 .task-edit-input {
   flex: 1;
-  min-width: 160px;
-  padding: 5px 10px !important;
-  min-height: 36px !important;
-  font-size: 0.95rem !important;
+  min-width: 150px;
+  padding: 4px 8px !important;
+  min-height: 32px !important;
+  font-size: 0.9rem !important;
 }
 
 .task-edit-date {
-  padding: 4px 8px !important;
-  min-height: 36px !important;
-  font-size: 0.85rem !important;
+  padding: 3px 6px !important;
+  min-height: 32px !important;
+  font-size: 0.8rem !important;
 }
 
+/* METADADOS E TAGS DA TAREFA (Pequenas, sem aparência de botão) */
 .task-meta {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   align-items: center;
-  font-size: 0.8rem;
-  font-weight: 700;
+  font-size: 0.72rem;
+  font-weight: 400;
 }
 
-.tag-project {
-  border: var(--border-w) solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 1px 7px;
-  cursor: pointer;
-}
-
+.tag-project,
 .tag-label {
-  border: var(--border-w) dashed var(--border);
-  border-radius: var(--radius-sm);
-  padding: 1px 7px;
+  border: none;
+  border-bottom: var(--border-w) dashed var(--border);
+  border-radius: 0;
+  padding: 0 1px;
+  font-size: 0.72rem;
+  font-weight: 400;
   cursor: pointer;
 }
 
 .tag-due {
+  font-size: 0.7rem;
+  font-weight: 400;
+  padding: 0 4px;
   border: var(--border-w) solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 1px 7px;
+  border-radius: 2px;
 }
 
 .tag-due.overdue {
   background-color: var(--fg);
   color: var(--bg);
+  font-weight: 500;
 }
 
 .tag-priority {
+  font-size: 0.68rem;
+  font-weight: 600;
   border: var(--border-w) solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 1px 6px;
+  border-radius: 2px;
+  padding: 0 4px;
   background-color: var(--fg);
   color: var(--bg);
 }
 
 .task-actions {
   display: flex;
-  gap: 6px;
+  gap: 4px;
   align-items: center;
 }
 
@@ -457,12 +472,13 @@ select:focus {
   color: var(--fg);
   border: var(--border-w) solid var(--border);
   border-radius: var(--radius-sm);
-  padding: 4px 8px;
-  font-size: 0.82rem;
-  font-weight: 700;
+  padding: 2px 6px;
+  font-size: 0.76rem;
+  font-family: inherit;
+  font-weight: 400;
   cursor: pointer;
-  min-height: 32px;
-  min-width: 32px;
+  min-height: 26px;
+  min-width: 26px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -476,23 +492,23 @@ select:focus {
 
 .empty-state {
   text-align: center;
-  padding: 40px 16px;
-  font-size: 1.1rem;
-  font-weight: 700;
+  padding: 32px 14px;
+  font-size: 0.95rem;
+  font-weight: 400;
   border: var(--border-w) dashed var(--border);
   border-radius: var(--radius-lg);
-  margin-top: 12px;
+  margin-top: 10px;
 }
 
 /* RODAPÉ */
 .footer {
-  margin-top: 24px;
-  padding-top: 12px;
+  margin-top: 20px;
+  padding-top: 10px;
   border-top: var(--border-w) solid var(--border);
   display: flex;
   justify-content: space-between;
-  font-size: 0.82rem;
-  font-weight: 700;
+  font-size: 0.75rem;
+  font-weight: 400;
 }
 
 /* MODAL DE CONFIGURAÇÕES COMPACTO (PARA TELAS E-INK PEQUENAS) */
@@ -530,8 +546,8 @@ select:focus {
 }
 
 .modal-header h2 {
-  font-size: 1.1rem;
-  font-weight: 800;
+  font-size: 1.05rem;
+  font-weight: 600;
 }
 
 .modal-body {
@@ -541,13 +557,13 @@ select:focus {
 }
 
 .help-text {
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   line-height: 1.25;
 }
 
 .field-label {
-  font-weight: 800;
-  font-size: 0.85rem;
+  font-weight: 600;
+  font-size: 0.82rem;
 }
 
 .full-input {
@@ -566,13 +582,13 @@ select:focus {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.82rem;
-  font-weight: 700;
+  font-size: 0.8rem;
+  font-weight: 400;
 }
 
 .checkbox-row input {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   accent-color: #000000;
 }
 

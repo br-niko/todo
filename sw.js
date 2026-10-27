@@ -1,4 +1,4 @@
-const CACHE_NAME = 'eink-tasks-v1';
+const CACHE_NAME = 'eink-tasks-v2';
 const ASSETS = [
   './',
   './index.html',

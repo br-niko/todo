@@ -10,6 +10,12 @@
 
 const TODOIST_API_BASE = 'https://api.todoist.com/api/v1';
 
+const ICONS = {
+  EDIT: `<svg class="icon-svg icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>`,
+  CLOSE: `<svg class="icon-svg icon-sm" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
+  CHECK: `<svg class="icon-svg icon-sm" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>`
+};
+
 const STORAGE_KEYS = {
   TOKEN: 'eink_todoist_token',
   TASKS: 'eink_todoist_tasks_cache',
@@ -784,13 +790,13 @@ function renderTasks() {
       saveBtn.type = 'submit';
       saveBtn.className = 'btn-task-action btn-save';
       saveBtn.title = 'Salvar alterações';
-      saveBtn.textContent = '✓';
+      saveBtn.innerHTML = ICONS.CHECK;
 
       const cancelBtn = document.createElement('button');
       cancelBtn.type = 'button';
       cancelBtn.className = 'btn-task-action';
       cancelBtn.title = 'Cancelar edição';
-      cancelBtn.textContent = '✕';
+      cancelBtn.innerHTML = ICONS.CLOSE;
       cancelBtn.addEventListener('click', () => {
         state.editingTaskId = null;
         renderAll();
@@ -872,7 +878,8 @@ function renderTasks() {
       editBtn.type = 'button';
       editBtn.className = 'btn-task-action';
       editBtn.title = 'Editar tarefa';
-      editBtn.textContent = '✎';
+      editBtn.setAttribute('aria-label', 'Editar tarefa');
+      editBtn.innerHTML = ICONS.EDIT;
       editBtn.addEventListener('click', () => {
         state.editingTaskId = String(task.id);
         renderAll();
@@ -884,7 +891,8 @@ function renderTasks() {
     delBtn.type = 'button';
     delBtn.className = 'btn-task-action';
     delBtn.title = 'Excluir tarefa';
-    delBtn.textContent = '✕';
+    delBtn.setAttribute('aria-label', 'Excluir tarefa');
+    delBtn.innerHTML = ICONS.CLOSE;
     delBtn.addEventListener('click', () => deleteTask(task.id));
 
     actions.appendChild(delBtn);

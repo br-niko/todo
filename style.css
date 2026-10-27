@@ -2,6 +2,7 @@
    E-INK BALANCED STYLESHEET (Boox / Kindle / Kobo / Android E-Ink)
    - Tipografia IBM Plex Sans (+2px sobre o ajuste anterior: base 17px)
    - Linhas finas de 1px
+   - Ícones SVG nítidos com traço forte para E-Ink
    - Tags discretas, legíveis mas sem parecer botões
    - Zero animações ou transições (evita ghosting e flickering em telas e-ink)
    ========================================================================== */
@@ -45,6 +46,25 @@ html, body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+}
+
+/* ÍCONES SVG NÍTIDOS PARA E-INK */
+.icon-svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  display: block;
+  flex-shrink: 0;
+}
+
+.icon-svg.icon-sm {
+  width: 15px;
+  height: 15px;
+  stroke-width: 2.4;
 }
 
 /* CABEÇALHO EM LINHA ÚNICA */
@@ -136,7 +156,7 @@ html, body {
 }
 
 .btn-icon {
-  padding: 4px 8px;
+  padding: 5px;
   min-width: 32px;
   min-height: 32px;
   font-size: 15px;
@@ -477,10 +497,10 @@ select:focus {
   color: var(--fg);
   border: var(--border-w) solid var(--border);
   border-radius: var(--radius-sm);
-  padding: 2px 5px;
+  padding: 4px;
   font-size: 13.5px;
   font-family: inherit;
-  font-weight: 400;
+  font-weight: 500;
   cursor: pointer;
   min-height: 26px;
   min-width: 26px;

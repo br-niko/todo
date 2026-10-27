@@ -111,7 +111,13 @@ html, body {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  min-height: 42px;
+  min-height: 40px;
+}
+
+.btn-sm {
+  padding: 6px 10px;
+  font-size: 0.82rem;
+  min-height: 34px;
 }
 
 .btn:active,
@@ -127,8 +133,9 @@ html, body {
 }
 
 .btn-icon {
-  padding: 8px 12px;
-  min-width: 42px;
+  padding: 6px 10px;
+  min-width: 38px;
+  min-height: 38px;
 }
 
 /* BARRA DE PROJETOS E LABELS (# / @) */
@@ -194,11 +201,11 @@ select {
   color: var(--fg);
   border: var(--border-w) solid var(--border);
   border-radius: var(--radius-md);
-  padding: 8px 12px;
-  font-size: 1rem;
+  padding: 7px 10px;
+  font-size: 0.95rem;
   font-family: inherit;
   font-weight: 600;
-  min-height: 44px;
+  min-height: 40px;
   outline: none;
 }
 
@@ -420,13 +427,6 @@ select:focus {
   cursor: pointer;
 }
 
-.tag-label {
-  border: 1.5px dashed var(--border);
-  border-radius: var(--radius-sm);
-  padding: 1px 7px;
-  cursor: pointer;
-}
-
 .tag-due {
   border: var(--border-w) solid var(--border);
   border-radius: var(--radius-sm);
@@ -495,16 +495,17 @@ select:focus {
   font-weight: 700;
 }
 
-/* MODAL DE CONFIGURAÇÕES */
+/* MODAL DE CONFIGURAÇÕES COMPACTO (PARA TELAS E-INK PEQUENAS) */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(255, 255, 255, 0.95);
+  background-color: rgba(255, 255, 255, 0.96);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: 16px;
+  padding: 8px;
   z-index: 100;
+  overflow-y: auto;
 }
 
 .modal-card {
@@ -512,11 +513,12 @@ select:focus {
   border: var(--border-w) solid var(--border);
   border-radius: var(--radius-lg);
   width: 100%;
-  max-width: 540px;
-  padding: 20px;
+  max-width: 480px;
+  padding: 12px;
+  margin: auto 0;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
 }
 
 .modal-header {
@@ -524,67 +526,78 @@ select:focus {
   justify-content: space-between;
   align-items: center;
   border-bottom: var(--border-w) solid var(--border);
-  padding-bottom: 10px;
+  padding-bottom: 6px;
+}
+
+.modal-header h2 {
+  font-size: 1.1rem;
+  font-weight: 800;
 }
 
 .modal-body {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .help-text {
-  font-size: 0.9rem;
-}
-
-.help-steps {
-  padding-left: 22px;
-  font-size: 0.88rem;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  font-size: 0.78rem;
+  line-height: 1.25;
 }
 
 .field-label {
   font-weight: 800;
-  font-size: 0.9rem;
-  margin-top: 4px;
+  font-size: 0.85rem;
 }
 
 .full-input {
   width: 100%;
 }
 
+.token-actions-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .checkbox-row {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.85rem;
+  gap: 6px;
+  font-size: 0.82rem;
   font-weight: 700;
 }
 
 .checkbox-row input {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   accent-color: #000000;
 }
 
 .divider {
   border: none;
   border-top: var(--border-w) solid var(--border);
-  margin: 8px 0;
+  margin: 2px 0;
+}
+
+.modal-inline-row {
+  flex-direction: row !important;
 }
 
 .modal-footer {
   display: flex;
-  justify-content: space-between;
-  gap: 10px;
+  justify-content: flex-end;
+  gap: 8px;
   border-top: var(--border-w) solid var(--border);
-  padding-top: 12px;
-  flex-wrap: wrap;
+  padding-top: 8px;
 }
 
 @media (max-width: 520px) {
+  .container {
+    padding: 10px;
+  }
   .input-row {
     flex-direction: column;
   }

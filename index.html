@@ -95,46 +95,42 @@
     </footer>
   </div>
 
-  <!-- MODAL DE CONFIGURAÇÃO (API TOKEN) -->
+  <!-- MODAL DE CONFIGURAÇÃO COMPACTO PARA TELAS E-INK PEQUENAS -->
   <div id="settings-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
     <div class="modal-card">
       <div class="modal-header">
         <h2 id="modal-title">Configurar Todoist</h2>
-        <button id="btn-close-settings" class="btn btn-icon">✕</button>
+        <button id="btn-close-settings" class="btn btn-icon" aria-label="Fechar">✕</button>
       </div>
       <div class="modal-body">
-        <p class="help-text">
-          Para sincronizar gratuitamente em qualquer aparelho, cole seu <strong>API Token do Todoist</strong>:
-        </p>
-        <ol class="help-steps">
-          <li>Abra o Todoist (Web ou App) → <strong>Configurações</strong></li>
-          <li>Vá em <strong>Integrações</strong> → aba <strong>Desenvolvedor</strong></li>
-          <li>Copie o <strong>Token da API</strong> e cole abaixo:</li>
-        </ol>
         <label for="api-token-input" class="field-label">Token da API do Todoist</label>
+        <p class="help-text">
+          Pegue em: Todoist → Configurações → Integrações → Desenvolvedor
+        </p>
         <input
           type="password"
           id="api-token-input"
           class="full-input"
-          placeholder="Ex: 0123456789abcdef0123456789abcdef01234567"
+          placeholder="Cole seu API Token aqui..."
         >
-        <div class="checkbox-row">
-          <input type="checkbox" id="toggle-show-token">
-          <label for="toggle-show-token">Mostrar token</label>
+        <div class="token-actions-row">
+          <div class="checkbox-row">
+            <input type="checkbox" id="toggle-show-token">
+            <label for="toggle-show-token">Mostrar</label>
+          </div>
+          <button type="button" id="btn-save-settings" class="btn btn-primary">Salvar e Sincronizar</button>
         </div>
 
         <hr class="divider">
 
-        <h3>Criar Nova Label (#)</h3>
-        <p class="help-text">Crie etiquetas como <strong>#pessoal</strong>, <strong>#trabalho</strong>, <strong>#estudos</strong> direto no Todoist:</p>
-        <div class="input-row">
-          <input type="text" id="new-project-input" placeholder="Nome da label (ex: pessoal)">
+        <label for="new-project-input" class="field-label">Criar Nova Label (#)</label>
+        <div class="input-row modal-inline-row">
+          <input type="text" id="new-project-input" placeholder="Ex: pessoal, trabalho">
           <button type="button" id="btn-create-project" class="btn">+ Criar</button>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" id="btn-clear-cache" class="btn">Limpar Dados Locais</button>
-        <button type="button" id="btn-save-settings" class="btn btn-primary">Salvar e Sincronizar</button>
+        <button type="button" id="btn-clear-cache" class="btn btn-sm">Limpar Dados Locais</button>
       </div>
     </div>
   </div>

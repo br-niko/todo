@@ -971,6 +971,19 @@ function closeSettingsModal() {
   els.settingsModal.classList.add('hidden');
 }
 
+function saveTokenAndSync() {
+  const newToken = els.apiTokenInput.value.trim();
+  state.token = newToken;
+  localStorage.setItem(STORAGE_KEYS.TOKEN, newToken);
+  closeSettingsModal();
+  if (newToken) {
+    syncWithTodoist();
+  } else {
+    updateSyncBadge('Modo Local', false);
+    renderAll();
+  }
+}
+
 function bindEvents() {
   els.addTaskForm.addEventListener('submit', handleAddTask);
 
@@ -1004,16 +1017,12 @@ function bindEvents() {
     els.apiTokenInput.type = e.target.checked ? 'text' : 'password';
   });
 
-  els.btnSaveSettings.addEventListener('click', () => {
-    const newToken = els.apiTokenInput.value.trim();
-    state.token = newToken;
-    localStorage.setItem(STORAGE_KEYS.TOKEN, newToken);
-    closeSettingsModal();
-    if (newToken) {
-      syncWithTodoist();
-    } else {
-      updateSyncBadge('Modo Local', false);
-      renderAll();
+  els.btnSaveSettings.addEventListener('click', saveTokenAndSync);
+
+  els.apiTokenInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      saveTokenAndSync();
     }
   });
 
@@ -1028,6 +1037,13 @@ function bindEvents() {
       showAlert(`Erro ao criar label: ${err.message}`);
     } finally {
       els.btnCreateProject.disabled = false;
+    }
+  });
+
+  els.newProjectInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      els.btnCreateProject.click();
     }
   });
 

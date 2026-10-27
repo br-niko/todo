@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>E-Ink Tasks (Todoist)</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app" class="container">
+    <!-- CABEÇALHO -->
+    <header class="header">
+      <div class="header-title-area">
+        <h1 id="current-view-title">Todas as Tarefas</h1>
+        <span id="sync-status" class="sync-badge">Offline</span>
+      </div>
+      <div class="header-actions">
+        <button id="btn-font-size" class="btn btn-icon" title="Alternar tamanho da fonte">Aa</button>
+        <button id="btn-sync" class="btn" title="Sincronizar com Todoist">↻ Atualizar</button>
+        <button id="btn-settings" class="btn btn-icon" title="Configurações / Token">⚙</button>
+      </div>
+    </header>
+
+    <!-- BARRA DE FILTROS / LABELS (#) -->
+    <nav class="projects-nav" aria-label="Filtros e Labels">
+      <div id="projects-bar" class="projects-list">
+        <!-- Renderizado via JS: Todas, Hoje (se >0), e #Labels ativos -->
+      </div>
+    </nav>
+
+    <!-- FORMULÁRIO DE NOVA TAREFA -->
+    <section class="add-task-section">
+      <form id="add-task-form" autocomplete="off">
+        <div class="input-row">
+          <input
+            type="text"
+            id="task-input"
+            placeholder="Nova tarefa... (use #label, p1, @hoje ou @25/12)"
+            required
+          >
+          <button type="submit" id="btn-add-task" class="btn btn-primary">Adicionar</button>
+        </div>
+
+        <!-- Sugestões rápidas de #label + seletores de prazo e prioridade -->
+        <div class="quick-options-row">
+          <div id="project-chips" class="quick-chips">
+            <!-- Chips rápidos de #label inseridos via JS -->
+          </div>
+          <div class="meta-selectors">
+            <select id="task-due-select" aria-label="Prazo">
+              <option value="">Sem data</option>
+              <option value="today">Hoje</option>
+              <option value="tomorrow">Amanhã</option>
+              <option value="next week">Próx. semana</option>
+              <option value="custom">Escolher data...</option>
+            </select>
+            <input
+              type="date"
+              id="task-custom-date"
+              class="hidden"
+              aria-label="Data específica"
+            >
+            <select id="task-priority-select" aria-label="Prioridade">
+              <option value="1">P4 (Normal)</option>
+              <option value="2">P3 (Média)</option>
+              <option value="3">P2 (Alta)</option>
+              <option value="4">P1 (Urgente)</option>
+            </select>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <!-- MENSAGEM DE ERRO OU AVISO -->
+    <div id="alert-box" class="alert-box hidden"></div>
+
+    <!-- LISTA DE TAREFAS -->
+    <main class="tasks-main">
+      <ul id="tasks-list" class="tasks-list">
+        <!-- Tarefas renderizadas aqui -->
+      </ul>
+      <div id="empty-state" class="empty-state hidden">
+        Nenhuma tarefa por aqui. Tudo em dia!
+      </div>
+    </main>
+
+    <!-- RODAPÉ RESUMO -->
+    <footer class="footer">
+      <span id="tasks-count">0 tarefas</span>
+      <span id="last-sync-time">Nunca sincronizado</span>
+    </footer>
+  </div>
+
+  <!-- MODAL DE CONFIGURAÇÃO (API TOKEN) -->
+  <div id="settings-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="modal-title">Configurar Todoist</h2>
+        <button id="btn-close-settings" class="btn btn-icon">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="help-text">
+          Para sincronizar gratuitamente em qualquer aparelho, cole seu <strong>API Token do Todoist</strong>:
+        </p>
+        <ol class="help-steps">
+          <li>Abra o Todoist (Web ou App) → <strong>Configurações</strong></li>
+          <li>Vá em <strong>Integrações</strong> → aba <strong>Desenvolvedor</strong></li>
+          <li>Copie o <strong>Token da API</strong> e cole abaixo:</li>
+        </ol>
+        <label for="api-token-input" class="field-label">Token da API do Todoist</label>
+        <input
+          type="password"
+          id="api-token-input"
+          class="full-input"
+          placeholder="Ex: 0123456789abcdef0123456789abcdef01234567"
+        >
+        <div class="checkbox-row">
+          <input type="checkbox" id="toggle-show-token">
+          <label for="toggle-show-token">Mostrar token</label>
+        </div>
+
+        <hr class="divider">
+
+        <h3>Criar Nova Label (#)</h3>
+        <p class="help-text">Crie etiquetas como <strong>#pessoal</strong>, <strong>#trabalho</strong>, <strong>#estudos</strong> direto no Todoist:</p>
+        <div class="input-row">
+          <input type="text" id="new-project-input" placeholder="Nome da label (ex: pessoal)">
+          <button type="button" id="btn-create-project" class="btn">+ Criar</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="btn-clear-cache" class="btn">Limpar Dados Locais</button>
+        <button type="button" id="btn-save-settings" class="btn btn-primary">Salvar e Sincronizar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "name": "E-Ink Tasks (Todoist)",
+  "short_name": "E-Ink Tasks",
+  "description": "Lista de tarefas minimalista para telas E-Ink sincronizada com Todoist",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff"
+}

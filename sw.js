@@ -1,10 +1,10 @@
-const CACHE_NAME = 'eink-tasks-v9';
+const CACHE_NAME = 'eink-tasks-v10';
 const ASSETS = [
   './',
   './index.html',
-  './style.css?v=9',
-  './app.js?v=9',
-  './manifest.json?v=9',
+  './style.css?v=10',
+  './app.js?v=10',
+  './manifest.json?v=10',
   './icon.svg',
   './icon-192.png',
   './icon-512.png'

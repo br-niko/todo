@@ -1,10 +1,8 @@
 /* ==========================================================================
-   E-INK ULTRA-COMPACT STYLESHEET (Boox / Kindle / Kobo / Android E-Ink)
-   - TipografiaTipografia IBMIBM Plex Sans otimizada para leitura nítida em tela
-   - Linhas finas de 1pxPlex Sans levecom e elegante)
-   - Tags pequenas e discretas (claramente distintas dos botõestamanhos reduzidos para telas pequenas
+   E-INK BALANCED STYLESHEET (Boox / Kindle / Kobo / Android E-Ink)
+   - Tipografia IBM Plex Sans em tamanho intermediário equilibrado (15px)
    - Linhas finas de 1px
-   - Tags minúsculas e discretas em todo o app
+   - Tags discretas (11px), legíveis mas sem parecer botões
    - Zero animações ou transições (evita ghosting e flickering em telas e-ink)
    ========================================================================== */
 
@@ -13,10 +11,10 @@
   --fg: #000000;
   --border: #000000;
   --border-w: 1px;
-  --radius-sm: 2px;
-  --radius-md: 3px;
-  --radius-lg: 4px;
-  --font-base: 13px;
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-lg: 5px;
+  --font-base: 15px;
   --font-family: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
@@ -35,56 +33,55 @@ html, body {
   font-family: var(--font-family);
   font-size: var(--font-base);
   font-weight: 400;
-  font-weight: 400;
-  line-height: 1.3;
+  line-height: 1.35;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
 
 .container {
-  max-width: 720px;
+  max-width: 740px;
   margin: 0 auto;
-  padding: 14px8px 10px;
+  padding: 10px 12px;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
-/* CABEÇALHO COMPACTO EM LINHA ÚNICA */
+/* CABEÇALHO EM LINHA ÚNICA */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-bottom: var(--border-w) solid var(--border);
-  padding-bottom: 10px6px;
-  margin-bottom: 12px6px;
-  gap: 10px6px;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+  gap: 8px;
 }
 
 .header-title-area {
   display: flex;
   align-items: center;
-  gap: 8px6px;
+  gap: 8px;
   min-width: 0;
 }
 
 .header h1 {
-  font-size: 14px;
-  font-weight: 600600;
-  letter-spacing: -0.01em01em;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .sync-badge {
-  font-size: 9px;
-  font-weight: 500400;
+  font-size: 10px;
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.02em;
   border: var(--border-w) solid var(--border);
-  border-radius: 999px2px;
-  padding: 1px0px 7px4px;
+  border-radius: 3px;
+  padding: 1px 5px;
   line-height: 1.3;
   white-space: nowrap;
 }
@@ -97,33 +94,33 @@ html, body {
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 6px4px;
+  gap: 5px;
   flex-shrink: 0;
 }
 
-/* BOTÕES COMPACTOS (Retangulares e distintos das tags) */
+/* BOTÕES */
 .btn {
   background-color: var(--bg);
   color: var(--fg);
   border: var(--border-w) solid var(--border);
   border-radius: var(--radius-md);
-  padding: 6px3px 12px8px;
-  font-size: 11px;
+  padding: 5px 10px;
+  font-size: 12.5px;
   font-family: inherit;
-  font-weight: 500500;
+  font-weight: 500;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 5px3px;
-  min-height: 36px24px;
-  line-height: 1.1;
+  gap: 4px;
+  min-height: 30px;
+  line-height: 1.15;
 }
 
 .btn-sm {
-  padding: 4px2px 9px6px;
-  font-size: 10px;
-  min-height: 30px22px;
+  padding: 4px 8px;
+  font-size: 11.5px;
+  min-height: 26px;
 }
 
 .btn:active,
@@ -139,21 +136,21 @@ html, body {
 }
 
 .btn-icon {
-  padding: 5px2px 9px6px;
-  min-width: 34px24px;
-  min-height: 34px24px;
-  font-size: 11px;
+  padding: 4px 8px;
+  min-width: 30px;
+  min-height: 30px;
+  font-size: 13px;
 }
 
-/* BARRA DE FILTROSFILTROS / TAGS NO TOPO (Pílulas menores e levesTAGS NO TOPO (Bem pequenas e discretas) */
+/* BARRA DE FILTROS / TAGS NO TOPO */
 .projects-nav {
-  margin-bottom: 12px6px;
+  margin-bottom: 8px;
 }
 
 .projects-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px4px;
+  gap: 5px;
   align-items: center;
 }
 
@@ -161,27 +158,27 @@ html, body {
   background-color: var(--bg);
   color: var(--fg);
   border: var(--border-w) solid var(--border);
-  border-radius: 999px2px;
-  padding: 2px1px 9px5px;
-  font-size: 10px;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 11.5px;
   font-family: inherit;
-  font-weight: 400400;
-  line-height: 1.2;
+  font-weight: 400;
+  line-height: 1.25;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 4px2px;
+  gap: 3px;
 }
 
 .project-tab.active {
   background-color: var(--fg);
   color: var(--bg);
-  fontfont-weightweight: 500500;
+  font-weight: 500;
 }
 
 .project-count {
-  font-size: 0.68rem;
-  opacity: 0.8;
+  font-size: 10.5px;
+  opacity: 0.85;
 }
 
 .project-count::before {
@@ -190,28 +187,19 @@ html, body {
 
 .project-count::after {
   content: ")";
-9px;
-  opacity: 85}
-
-.project-count::before {
-  content: "(";
 }
 
-.project-count::after {
-  content: ")";
-}
-
-/* SEÇÃO ADICIONAR TAREFA (COLAPSÁVEL E COMPACTA) */
+/* SEÇÃO ADICIONAR TAREFA (COLAPSÁVEL) */
 .add-task-section {
   border: var(--border-w) solid var(--border);
   border-radius: var(--radius-md);
-  padding: 10px6px;
-  margin-bottom: 14px8px;
+  padding: 8px;
+  margin-bottom: 10px;
 }
 
 .input-row {
   display: flex;
-  gap: 6px4px;
+  gap: 6px;
   align-items: center;
 }
 
@@ -223,11 +211,11 @@ select {
   color: var(--fg);
   border: var(--border-w) solid var(--border);
   border-radius: var(--radius-sm);
-  padding: 6px3px 6px;
-  font-size: 12px;
+  padding: 5px 8px;
+  font-size: 14px;
   font-family: inherit;
-  font-weight: 400400;
-  min-height: 36px26px;
+  font-weight: 400;
+  min-height: 32px;
   outline: none;
 }
 
@@ -236,7 +224,7 @@ input[type="password"]:focus,
 input[type="date"]:focus,
 select:focus {
   outline: var(--border-w) solid var(--fg);
-  outline-offset: 00;
+  outline-offset: 0;
 }
 
 #task-input,
@@ -249,28 +237,28 @@ select:focus {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 8px5px;
-  gap: 8px4px;
+  margin-top: 6px;
+  gap: 6px;
   flex-wrap: wrap;
 }
 
 .quick-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px3px;
+  gap: 5px;
   align-items: center;
 }
 
-/* Chips rápidos de #label no formulário: minúsculos */
+/* Chips rápidos de #label no formulário */
 .chip {
   background-color: var(--bg);
   color: var(--fg);
   border: none;
   border-bottom: var(--border-w) dashed var(--border);
-  padding: 1px0px 7px3px;
-  font-size: 10px;
+  padding: 1px 4px;
+  font-size: 11.5px;
   font-family: inherit;
-  font-weight: 400400;
+  font-weight: 400;
   line-height: 1.2;
   cursor: pointer;
 }
@@ -283,31 +271,30 @@ select:focus {
 
 .meta-selectors {
   display: flex;
-  gap: 5px4px;
+  gap: 5px;
   flex-wrap: wrap;
   align-items: center;
 }
 
 .meta-selectors select,
 .meta-selectors input[type="date"] {
-  padding: 2px1px 6px4px;
-  font-size: 10px;
-  min-height: 28px22px;
+  padding: 2px 6px;
+  font-size: 11.5px;
+  min-height: 26px;
 }
 
 /* AVISOS */
 .alert-box {
   border: var(--border-w) solid var(--border);
   border-radius: var(--radius-sm);
-  padding: 8px4px 12px8px;
-  margin-bottom: 12px;
-  font-size: 0.85rem6px;
-  font-size: 11px;
-  font-weight: 500400;
+  padding: 6px 10px;
+  margin-bottom: 8px;
+  font-size: 12.5px;
+  font-weight: 400;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 8px6px;
+  gap: 8px;
 }
 
 .hidden {
@@ -328,31 +315,31 @@ select:focus {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 10px6px;
-  padding: 9px5px 4px2px;
+  gap: 8px;
+  padding: 7px 2px;
   border-bottom: var(--border-w) solid var(--border);
 }
 
 .task-left {
   display: flex;
   align-items: flex-start;
-  gap: 10px6px;
+  gap: 8px;
   flex: 1;
   min-width: 0;
 }
 
-/* CHECKBOX FINO E PEQUENO EFINO + PONTINHOS DE CONTAGEM */
+/* CHECKBOX EQUILIBRADO + PONTINHOS DE CONTAGEM */
 .task-checkbox-wrap {
   display: flex;
   align-items: center;
-  gap: 4px3px;
+  gap: 4px;
   margin-top: 2px;
 }
 
 .task-checkbox {
-  width: 22px16px;
-  height: 22px16px;
-  min-width: 22px16px;
+  width: 19px;
+  height: 19px;
+  min-width: 19px;
   border: var(--border-w) solid var(--border);
   border-radius: var(--radius-sm);
   background-color: var(--bg);
@@ -360,9 +347,9 @@ select:focus {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 010px;
+  font-size: 12px;
   font-family: inherit;
-  font-weight: 600600;
+  font-weight: 600;
   line-height: 1;
 }
 
@@ -377,30 +364,30 @@ select:focus {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 2px2px;
-  width: 5px4px;
-  height: 22px16px;
+  gap: 2px;
+  width: 5px;
+  height: 19px;
 }
 
 .countdown-dot {
-  width: 4px3px;
-  height: 4px3px;
+  width: 3.5px;
+  height: 3.5px;
   background-color: var(--fg);
-  border-radius: 50%50%;
+  border-radius: 50%;
 }
 
 .task-content-wrap {
   display: flex;
   flex-direction: column;
-  gap: 2px1px;
+  gap: 2px;
   flex: 1;
   min-width: 0;
 }
 
 .task-title {
-  font-size: 012.98rem5px;
-  font-weight: 500400;
-  line-height: 1.25;
+  font-size: 14.5px;
+  font-weight: 400;
+  line-height: 1.3;
   word-break: break-word;
 }
 
@@ -411,7 +398,7 @@ select:focus {
 /* EDIÇÃO INLINE DA TAREFA */
 .task-edit-form {
   display: flex;
-  gap: 4px;
+  gap: 5px;
   align-items: center;
   width: 100%;
   flex-wrap: wrap;
@@ -419,37 +406,34 @@ select:focus {
 
 .task-edit-input {
   flex: 1;
-  min-width: 150px120px;
-  padding: 4px2px 8px6px !important;
-  min-height: 32px24px !important;
-  font-size: 12px !important;
+  min-width: 130px;
+  padding: 4px 8px !important;
+  min-height: 28px !important;
+  font-size: 13.5px !important;
 }
 
 .task-edit-date {
-  padding: 3px2px 6px4px !important;
-  min-height: 32px24px !important;
-  font-size: 10px !important;
+  padding: 3px 6px !important;
+  min-height: 28px !important;
+  font-size: 11.5px !important;
 }
 
-/* METADADOS E TAGS DA TAREFA (Minúsculas, 9.5px, sem cara de botão) */
+/* METADADOS E TAGS DA TAREFA (11px: legível e sem parecer botão) */
 .task-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
   align-items: center;
-  font-size: 9.72rem5px;
-  line-height: 1.1;
-  font-weight: 400400;
+  font-size: 11px;
+  line-height: 1.2;
+  font-weight: 400;
 }
 
-.tag-project,,
+.tag-project,
 .tag-label {
   border: none;
-  border-bottom: none;
-  padding: 00;
-  font-size: 1px;
-  font-size: 0.72rem;
-  font-weight: 4009.5px;
+  padding: 0;
+  font-size: 11px;
   font-weight: 400;
   text-decoration: underline;
   text-decoration-style: dotted;
@@ -458,37 +442,33 @@ select:focus {
 }
 
 .tag-due {
-  font-size: 0.7rem;
+  font-size: 11px;
   font-weight: 400;
-  padding: 0 4px;
-  font-size: 9.5px;
-  font-weight: 2px4000;
-  border:none;
+  padding: 0;
+  border: none;
 }
 
 .tag-due.overdue {
   background-color: var(--fg);
   color: var(--bg);
-  padding: 0 3px;
+  padding: 0 4px;
   border-radius: 2px;
   font-weight: 500;
 }
 
 .tag-priority {
-  font-size: 0.68rem;
-  font-weight: 600;
-  font-size: 9px;
+  font-size: 10.5px;
   font-weight: 600;
   border: none;
-  border-radius: 2px2px;
-  padding: 00 4px3px;
+  border-radius: 2px;
+  padding: 0 4px;
   background-color: var(--fg);
   color: var(--bg);
 }
 
 .task-actions {
   display: flex;
-  gap: 4px3px;
+  gap: 4px;
   align-items: center;
 }
 
@@ -497,13 +477,13 @@ select:focus {
   color: var(--fg);
   border: var(--border-w) solid var(--border);
   border-radius: var(--radius-sm);
-  padding: 2px1px 6px4px;
-  font-size: 10px;
+  padding: 2px 5px;
+  font-size: 11.5px;
   font-family: inherit;
-  font-weight: 400400;
+  font-weight: 400;
   cursor: pointer;
-  min-height: 26px20px;
-  min-width: 26px20px;
+  min-height: 24px;
+  min-width: 24px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -517,26 +497,26 @@ select:focus {
 
 .empty-state {
   text-align: center;
-  padding: 32px20px 14px10px;
-  font-size: 011px;
-  font-weight: 400400;
+  padding: 24px 12px;
+  font-size: 13px;
+  font-weight: 400;
   border: var(--border-w) dashed var(--border);
   border-radius: var(--radius-md);
-  margin-top: 10px8px;
+  margin-top: 10px;
 }
 
 /* RODAPÉ */
 .footer {
-  margin-top: 20px10px;
-  padding-top: 10px6px;
+  margin-top: 14px;
+  padding-top: 8px;
   border-top: var(--border-w) solid var(--border);
   display: flex;
   justify-content: space-between;
-  font-size: 10px;
-  font-weight: 400400;
+  font-size: 11.5px;
+  font-weight: 400;
 }
 
-/* MODAL DE CONFIGURAÇÕES COMPACTO */
+/* MODAL DE CONFIGURAÇÕES */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -544,7 +524,7 @@ select:focus {
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding: 6px;
+  padding: 8px;
   z-index: 100;
   overflow-y: auto;
 }
@@ -554,12 +534,12 @@ select:focus {
   border: var(--border-w) solid var(--border);
   border-radius: var(--radius-md);
   width: 100%;
-  max-width: 420px;
-  padding: 10px;
+  max-width: 440px;
+  padding: 12px;
   margin: auto 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .modal-header {
@@ -567,28 +547,28 @@ select:focus {
   justify-content: space-between;
   align-items: center;
   border-bottom: var(--border-w) solid var(--border);
-  padding-bottom: 4px;
+  padding-bottom: 6px;
 }
 
 .modal-header h2 {
-  font-size: 13px;
-  font-weight: 600600;
+  font-size: 14.5px;
+  font-weight: 600;
 }
 
 .modal-body {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 6px;
 }
 
 .help-text {
-  font-size: 10px;
-  line-height: 1.2;
+  font-size: 11.5px;
+  line-height: 1.25;
 }
 
 .field-label {
-  font-weight: 600600;
-  font-size: 11px;
+  font-weight: 600;
+  font-size: 12.5px;
 }
 
 .full-input {
@@ -599,28 +579,28 @@ select:focus {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
 .checkbox-row {
   display: flex;
   align-items: center;
-  gap: 4px;
-  font-size: 10px;
-  font-weight: 400400;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 400;
 }
 
 .checkbox-row input {
-  width: 16px14px;
-  height: 16px14px;
+  width: 16px;
+  height: 16px;
   accent-color: #000000;
 }
 
 .divider {
   border: none;
   border-top: var(--border-w) solid var(--border);
-  margin: 2px 0;
+  margin: 3px 0;
 }
 
 .modal-inline-row {
@@ -630,7 +610,7 @@ select:focus {
 .modal-footer {
   display: flex;
   justify-content: flex-end;
-  gap: 6px;
+  gap: 8px;
   border-top: var(--border-w) solid var(--border);
-  padding-top: 6px;
+  padding-top: 8px;
 }

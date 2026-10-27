@@ -14,20 +14,20 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div id="app" class="container">
-    <!-- CABEÇALHO -->
+    <!-- CABEÇALHO COMPACTO -->
     <header class="header">
       <div class="header-title-area">
-        <h1 id="current-view-title">Todas as Tarefas</h1>
+        <h1 id="current-view-title">Tarefas</h1>
         <span id="sync-status" class="sync-badge">Offline</span>
       </div>
       <div class="header-actions">
-        <button id="btn-font-size" class="btn btn-icon" title="Alternar tamanho da fonte">Aa</button>
-        <button id="btn-sync" class="btn" title="Sincronizar com Todoist">↻ Atualizar</button>
+        <button id="btn-toggle-add" class="btn btn-primary" title="Nova tarefa">+ Nova</button>
+        <button id="btn-sync" class="btn btn-icon" title="Sincronizar com Todoist">↻</button>
         <button id="btn-settings" class="btn btn-icon" title="Configurações / Token">⚙</button>
       </div>
     </header>
@@ -39,17 +39,18 @@
       </div>
     </nav>
 
-    <!-- FORMULÁRIO DE NOVA TAREFA -->
-    <section class="add-task-section">
+    <!-- FORMULÁRIO DE NOVA TAREFA (OCULTO POR PADRÃO, ABRE AO CLICAR EM "+ Nova") -->
+    <section id="add-task-section" class="add-task-section hidden">
       <form id="add-task-form" autocomplete="off">
         <div class="input-row">
           <input
             type="text"
             id="task-input"
-            placeholder="Nova tarefa... (use #label, p1, @hoje ou @25/12)"
+            placeholder="Tarefa... (#label, p1, @hoje, @25/12)"
             required
           >
-          <button type="submit" id="btn-add-task" class="btn btn-primary">Adicionar</button>
+          <button type="submit" id="btn-add-task" class="btn btn-primary">Salvar</button>
+          <button type="button" id="btn-cancel-add" class="btn btn-icon" title="Fechar">✕</button>
         </div>
 
         <!-- Sugestões rápidas de #label + seletores de prazo e prioridade -->
@@ -62,8 +63,8 @@
               <option value="">Sem data</option>
               <option value="today">Hoje</option>
               <option value="tomorrow">Amanhã</option>
-              <option value="next week">Próx. semana</option>
-              <option value="custom">Escolher data...</option>
+              <option value="next week">Próx. sem.</option>
+              <option value="custom">Data...</option>
             </select>
             <input
               type="date"
@@ -72,10 +73,10 @@
               aria-label="Data específica"
             >
             <select id="task-priority-select" aria-label="Prioridade">
-              <option value="1">P4 (Normal)</option>
-              <option value="2">P3 (Média)</option>
-              <option value="3">P2 (Alta)</option>
-              <option value="4">P1 (Urgente)</option>
+              <option value="1">P4</option>
+              <option value="2">P3</option>
+              <option value="3">P2</option>
+              <option value="4">P1</option>
             </select>
           </div>
         </div>
@@ -91,7 +92,7 @@
         <!-- Tarefas renderizadas aqui -->
       </ul>
       <div id="empty-state" class="empty-state hidden">
-        Nenhuma tarefa por aqui. Tudo em dia!
+        Nenhuma tarefa por aqui.
       </div>
     </main>
 
@@ -112,7 +113,7 @@
       <div class="modal-body">
         <label for="api-token-input" class="field-label">Token da API do Todoist</label>
         <p class="help-text">
-          Pegue em: Todoist → Configurações → Integrações → Desenvolvedor
+          Todoist → Configurações → Integrações → Desenvolvedor
         </p>
         <input
           type="password"

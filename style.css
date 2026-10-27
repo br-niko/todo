@@ -1,8 +1,10 @@
 /* ==========================================================================
-   E-INK OPTIMIZED STYLESHEET (Boox / Kindle / Kobo / Mobile / Desktop)
-   - Tipografia IBM Plex Sans otimizada para leitura nítida em tela
-   - Linhas finas de 1px (traço leve e elegante)
-   - Tags pequenas e discretas (claramente distintas dos botões)
+   E-INK ULTRA-COMPACT STYLESHEET (Boox / Kindle / Kobo / Android E-Ink)
+   - TipografiaTipografia IBMIBM Plex Sans otimizada para leitura nítida em tela
+   - Linhas finas de 1pxPlex Sans levecom e elegante)
+   - Tags pequenas e discretas (claramente distintas dos botõestamanhos reduzidos para telas pequenas
+   - Linhas finas de 1px
+   - Tags minúsculas e discretas em todo o app
    - Zero animações ou transições (evita ghosting e flickering em telas e-ink)
    ========================================================================== */
 
@@ -11,26 +13,17 @@
   --fg: #000000;
   --border: #000000;
   --border-w: 1px;
-  --radius-sm: 3px;
-  --radius-md: 4px;
-  --radius-lg: 6px;
-  --font-base: 17px;
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 4px;
+  --font-base: 13px;
   --font-family: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-}
-
-body.font-large {
-  --font-base: 20px;
-}
-
-body.font-xlarge {
-  --font-base: 24px;
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  /* Desativa qualquer animação ou transição para telas E-Ink */
   transition: none !important;
   animation: none !important;
   -webkit-tap-highlight-color: transparent;
@@ -42,53 +35,58 @@ html, body {
   font-family: var(--font-family);
   font-size: var(--font-base);
   font-weight: 400;
-  line-height: 1.4;
+  font-weight: 400;
+  line-height: 1.3;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
 
 .container {
-  max-width: 820px;
+  max-width: 720px;
   margin: 0 auto;
-  padding: 14px;
+  padding: 14px8px 10px;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
-/* CABEÇALHO */
+/* CABEÇALHO COMPACTO EM LINHA ÚNICA */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-bottom: var(--border-w) solid var(--border);
-  padding-bottom: 10px;
-  margin-bottom: 12px;
-  gap: 10px;
-  flex-wrap: wrap;
+  padding-bottom: 10px6px;
+  margin-bottom: 12px6px;
+  gap: 10px6px;
 }
 
 .header-title-area {
   display: flex;
-  align-items: baseline;
-  gap: 8px;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px6px;
+  min-width: 0;
 }
 
 .header h1 {
-  font-size: 1.3rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  font-size: 14px;
+  font-weight: 600600;
+  letter-spacing: -0.01em01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .sync-badge {
-  font-size: 0.68rem;
-  font-weight: 500;
+  font-size: 9px;
+  font-weight: 500400;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
   border: var(--border-w) solid var(--border);
-  border-radius: 999px;
-  padding: 1px 7px;
+  border-radius: 999px2px;
+  padding: 1px0px 7px4px;
+  line-height: 1.3;
+  white-space: nowrap;
 }
 
 .sync-badge.syncing {
@@ -98,31 +96,34 @@ html, body {
 
 .header-actions {
   display: flex;
-  gap: 6px;
+  align-items: center;
+  gap: 6px4px;
+  flex-shrink: 0;
 }
 
-/* BOTÕES PADRÃO E-INK (Retangulares e distintos das tags) */
+/* BOTÕES COMPACTOS (Retangulares e distintos das tags) */
 .btn {
   background-color: var(--bg);
   color: var(--fg);
   border: var(--border-w) solid var(--border);
   border-radius: var(--radius-md);
-  padding: 6px 12px;
-  font-size: 0.85rem;
+  padding: 6px3px 12px8px;
+  font-size: 11px;
   font-family: inherit;
-  font-weight: 500;
+  font-weight: 500500;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
-  min-height: 36px;
+  gap: 5px3px;
+  min-height: 36px24px;
+  line-height: 1.1;
 }
 
 .btn-sm {
-  padding: 4px 9px;
-  font-size: 0.78rem;
-  min-height: 30px;
+  padding: 4px2px 9px6px;
+  font-size: 10px;
+  min-height: 30px22px;
 }
 
 .btn:active,
@@ -138,41 +139,44 @@ html, body {
 }
 
 .btn-icon {
-  padding: 5px 9px;
-  min-width: 34px;
-  min-height: 34px;
+  padding: 5px2px 9px6px;
+  min-width: 34px24px;
+  min-height: 34px24px;
+  font-size: 11px;
 }
 
-/* BARRA DE FILTROS / TAGS NO TOPO (Pílulas menores e leves) */
+/* BARRA DE FILTROSFILTROS / TAGS NO TOPO (Pílulas menores e levesTAGS NO TOPO (Bem pequenas e discretas) */
 .projects-nav {
-  margin-bottom: 12px;
+  margin-bottom: 12px6px;
 }
 
 .projects-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 6px4px;
+  align-items: center;
 }
 
 .project-tab {
   background-color: var(--bg);
   color: var(--fg);
   border: var(--border-w) solid var(--border);
-  border-radius: 999px;
-  padding: 2px 9px;
-  font-size: 0.76rem;
+  border-radius: 999px2px;
+  padding: 2px1px 9px5px;
+  font-size: 10px;
   font-family: inherit;
-  font-weight: 400;
+  font-weight: 400400;
+  line-height: 1.2;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 4px2px;
 }
 
 .project-tab.active {
   background-color: var(--fg);
   color: var(--bg);
-  font-weight: 500;
+  fontfont-weightweight: 500500;
 }
 
 .project-count {
@@ -186,19 +190,29 @@ html, body {
 
 .project-count::after {
   content: ")";
+9px;
+  opacity: 85}
+
+.project-count::before {
+  content: "(";
 }
 
-/* SEÇÃO ADICIONAR TAREFA */
+.project-count::after {
+  content: ")";
+}
+
+/* SEÇÃO ADICIONAR TAREFA (COLAPSÁVEL E COMPACTA) */
 .add-task-section {
   border: var(--border-w) solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 10px;
-  margin-bottom: 14px;
+  border-radius: var(--radius-md);
+  padding: 10px6px;
+  margin-bottom: 14px8px;
 }
 
 .input-row {
   display: flex;
-  gap: 6px;
+  gap: 6px4px;
+  align-items: center;
 }
 
 input[type="text"],
@@ -208,12 +222,12 @@ select {
   background-color: var(--bg);
   color: var(--fg);
   border: var(--border-w) solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 6px 10px;
-  font-size: 0.92rem;
+  border-radius: var(--radius-sm);
+  padding: 6px3px 6px;
+  font-size: 12px;
   font-family: inherit;
-  font-weight: 400;
-  min-height: 36px;
+  font-weight: 400400;
+  min-height: 36px26px;
   outline: none;
 }
 
@@ -222,7 +236,7 @@ input[type="password"]:focus,
 input[type="date"]:focus,
 select:focus {
   outline: var(--border-w) solid var(--fg);
-  outline-offset: 0;
+  outline-offset: 00;
 }
 
 #task-input,
@@ -235,28 +249,29 @@ select:focus {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 8px;
-  gap: 8px;
+  margin-top: 8px5px;
+  gap: 8px4px;
   flex-wrap: wrap;
 }
 
 .quick-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
+  gap: 5px3px;
   align-items: center;
 }
 
-/* Chips de sugestão de #label: bem pequenos e tracejados */
+/* Chips rápidos de #label no formulário: minúsculos */
 .chip {
   background-color: var(--bg);
   color: var(--fg);
-  border: var(--border-w) dashed var(--border);
-  border-radius: 999px;
-  padding: 1px 7px;
-  font-size: 0.7rem;
+  border: none;
+  border-bottom: var(--border-w) dashed var(--border);
+  padding: 1px0px 7px3px;
+  font-size: 10px;
   font-family: inherit;
-  font-weight: 400;
+  font-weight: 400400;
+  line-height: 1.2;
   cursor: pointer;
 }
 
@@ -264,35 +279,35 @@ select:focus {
 .chip.selected {
   background-color: var(--fg);
   color: var(--bg);
-  border-style: solid;
 }
 
 .meta-selectors {
   display: flex;
-  gap: 5px;
+  gap: 5px4px;
   flex-wrap: wrap;
   align-items: center;
 }
 
 .meta-selectors select,
 .meta-selectors input[type="date"] {
-  padding: 2px 6px;
-  font-size: 0.75rem;
-  min-height: 28px;
+  padding: 2px1px 6px4px;
+  font-size: 10px;
+  min-height: 28px22px;
 }
 
 /* AVISOS */
 .alert-box {
   border: var(--border-w) solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  padding: 8px4px 12px8px;
   margin-bottom: 12px;
-  font-size: 0.85rem;
-  font-weight: 500;
+  font-size: 0.85rem6px;
+  font-size: 11px;
+  font-weight: 500400;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 8px;
+  gap: 8px6px;
 }
 
 .hidden {
@@ -313,31 +328,31 @@ select:focus {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 10px;
-  padding: 9px 4px;
+  gap: 10px6px;
+  padding: 9px5px 4px2px;
   border-bottom: var(--border-w) solid var(--border);
 }
 
 .task-left {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
+  gap: 10px6px;
   flex: 1;
   min-width: 0;
 }
 
-/* CHECKBOX FINO E NÍTIDO PARA E-INK + PONTINHOS DE CONTAGEM */
+/* CHECKBOX FINO E PEQUENO EFINO + PONTINHOS DE CONTAGEM */
 .task-checkbox-wrap {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 4px3px;
   margin-top: 2px;
 }
 
 .task-checkbox {
-  width: 22px;
-  height: 22px;
-  min-width: 22px;
+  width: 22px16px;
+  height: 22px16px;
+  min-width: 22px16px;
   border: var(--border-w) solid var(--border);
   border-radius: var(--radius-sm);
   background-color: var(--bg);
@@ -345,47 +360,47 @@ select:focus {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.85rem;
+  font-size: 010px;
   font-family: inherit;
-  font-weight: 600;
+  font-weight: 600600;
+  line-height: 1;
 }
 
-/* Quando clicado/concluindo: pinta o fundo de preto puro (anti-ghosting) */
 .task-checkbox:active,
 .task-item.completing .task-checkbox {
   background-color: var(--fg);
   color: var(--bg);
 }
 
-/* Pontinhos empilhados na vertical ao lado do checkbox durante a contagem */
 .countdown-dots {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 2px;
-  width: 5px;
-  height: 22px;
+  gap: 2px2px;
+  width: 5px4px;
+  height: 22px16px;
 }
 
 .countdown-dot {
-  width: 4px;
-  height: 4px;
+  width: 4px3px;
+  height: 4px3px;
   background-color: var(--fg);
-  border-radius: 50%;
+  border-radius: 50%50%;
 }
 
 .task-content-wrap {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 2px1px;
   flex: 1;
   min-width: 0;
 }
 
 .task-title {
-  font-size: 0.98rem;
-  font-weight: 500;
+  font-size: 012.98rem5px;
+  font-weight: 500400;
+  line-height: 1.25;
   word-break: break-word;
 }
 
@@ -396,7 +411,7 @@ select:focus {
 /* EDIÇÃO INLINE DA TAREFA */
 .task-edit-form {
   display: flex;
-  gap: 6px;
+  gap: 4px;
   align-items: center;
   width: 100%;
   flex-wrap: wrap;
@@ -404,36 +419,41 @@ select:focus {
 
 .task-edit-input {
   flex: 1;
-  min-width: 150px;
-  padding: 4px 8px !important;
-  min-height: 32px !important;
-  font-size: 0.9rem !important;
+  min-width: 150px120px;
+  padding: 4px2px 8px6px !important;
+  min-height: 32px24px !important;
+  font-size: 12px !important;
 }
 
 .task-edit-date {
-  padding: 3px 6px !important;
-  min-height: 32px !important;
-  font-size: 0.8rem !important;
+  padding: 3px2px 6px4px !important;
+  min-height: 32px24px !important;
+  font-size: 10px !important;
 }
 
-/* METADADOS E TAGS DA TAREFA (Pequenas, sem aparência de botão) */
+/* METADADOS E TAGS DA TAREFA (Minúsculas, 9.5px, sem cara de botão) */
 .task-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
-  font-size: 0.72rem;
-  font-weight: 400;
+  font-size: 9.72rem5px;
+  line-height: 1.1;
+  font-weight: 400400;
 }
 
-.tag-project,
+.tag-project,,
 .tag-label {
   border: none;
-  border-bottom: var(--border-w) dashed var(--border);
-  border-radius: 0;
-  padding: 0 1px;
+  border-bottom: none;
+  padding: 00;
+  font-size: 1px;
   font-size: 0.72rem;
+  font-weight: 4009.5px;
   font-weight: 400;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 2px;
   cursor: pointer;
 }
 
@@ -441,29 +461,34 @@ select:focus {
   font-size: 0.7rem;
   font-weight: 400;
   padding: 0 4px;
-  border: var(--border-w) solid var(--border);
-  border-radius: 2px;
+  font-size: 9.5px;
+  font-weight: 2px4000;
+  border:none;
 }
 
 .tag-due.overdue {
   background-color: var(--fg);
   color: var(--bg);
+  padding: 0 3px;
+  border-radius: 2px;
   font-weight: 500;
 }
 
 .tag-priority {
   font-size: 0.68rem;
   font-weight: 600;
-  border: var(--border-w) solid var(--border);
-  border-radius: 2px;
-  padding: 0 4px;
+  font-size: 9px;
+  font-weight: 600;
+  border: none;
+  border-radius: 2px2px;
+  padding: 00 4px3px;
   background-color: var(--fg);
   color: var(--bg);
 }
 
 .task-actions {
   display: flex;
-  gap: 4px;
+  gap: 4px3px;
   align-items: center;
 }
 
@@ -472,13 +497,13 @@ select:focus {
   color: var(--fg);
   border: var(--border-w) solid var(--border);
   border-radius: var(--radius-sm);
-  padding: 2px 6px;
-  font-size: 0.76rem;
+  padding: 2px1px 6px4px;
+  font-size: 10px;
   font-family: inherit;
-  font-weight: 400;
+  font-weight: 400400;
   cursor: pointer;
-  min-height: 26px;
-  min-width: 26px;
+  min-height: 26px20px;
+  min-width: 26px20px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -492,26 +517,26 @@ select:focus {
 
 .empty-state {
   text-align: center;
-  padding: 32px 14px;
-  font-size: 0.95rem;
-  font-weight: 400;
+  padding: 32px20px 14px10px;
+  font-size: 011px;
+  font-weight: 400400;
   border: var(--border-w) dashed var(--border);
-  border-radius: var(--radius-lg);
-  margin-top: 10px;
+  border-radius: var(--radius-md);
+  margin-top: 10px8px;
 }
 
 /* RODAPÉ */
 .footer {
-  margin-top: 20px;
-  padding-top: 10px;
+  margin-top: 20px10px;
+  padding-top: 10px6px;
   border-top: var(--border-w) solid var(--border);
   display: flex;
   justify-content: space-between;
-  font-size: 0.75rem;
-  font-weight: 400;
+  font-size: 10px;
+  font-weight: 400400;
 }
 
-/* MODAL DE CONFIGURAÇÕES COMPACTO (PARA TELAS E-INK PEQUENAS) */
+/* MODAL DE CONFIGURAÇÕES COMPACTO */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -519,7 +544,7 @@ select:focus {
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding: 8px;
+  padding: 6px;
   z-index: 100;
   overflow-y: auto;
 }
@@ -527,14 +552,14 @@ select:focus {
 .modal-card {
   background-color: var(--bg);
   border: var(--border-w) solid var(--border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   width: 100%;
-  max-width: 480px;
-  padding: 12px;
+  max-width: 420px;
+  padding: 10px;
   margin: auto 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
 }
 
 .modal-header {
@@ -542,28 +567,28 @@ select:focus {
   justify-content: space-between;
   align-items: center;
   border-bottom: var(--border-w) solid var(--border);
-  padding-bottom: 6px;
+  padding-bottom: 4px;
 }
 
 .modal-header h2 {
-  font-size: 1.05rem;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 600600;
 }
 
 .modal-body {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 5px;
 }
 
 .help-text {
-  font-size: 0.76rem;
-  line-height: 1.25;
+  font-size: 10px;
+  line-height: 1.2;
 }
 
 .field-label {
-  font-weight: 600;
-  font-size: 0.82rem;
+  font-weight: 600600;
+  font-size: 11px;
 }
 
 .full-input {
@@ -574,21 +599,21 @@ select:focus {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
 }
 
 .checkbox-row {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 0.8rem;
-  font-weight: 400;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 400400;
 }
 
 .checkbox-row input {
-  width: 16px;
-  height: 16px;
+  width: 16px14px;
+  height: 16px14px;
   accent-color: #000000;
 }
 
@@ -605,23 +630,7 @@ select:focus {
 .modal-footer {
   display: flex;
   justify-content: flex-end;
-  gap: 8px;
+  gap: 6px;
   border-top: var(--border-w) solid var(--border);
-  padding-top: 8px;
-}
-
-@media (max-width: 520px) {
-  .container {
-    padding: 10px;
-  }
-  .input-row {
-    flex-direction: column;
-  }
-  .header {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .header-actions {
-    justify-content: space-between;
-  }
+  padding-top: 6px;
 }

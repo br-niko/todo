@@ -2,7 +2,7 @@
  * E-Ink Todoist App
  * - Tipografia IBM Plex Sans com linhas finas e visual balanceado
  * - Sincroniza diretamente com a Unified API v1 do Todoist (https://api.todoist.com/api/v1)
- * - Usa #label para representar as Labels (etiquetas) do Todoist
+ * - Usa #label na digitação, e exibe o texto limpo da label (sem o #)
  * - Suporta subtarefas (parent_id) com botão e modal dedicado
  * - Suporta datas personalizadas (seletor de calendário ou @25/12, @hoje, @amanha)
  * - Edição inline com ícones SVG nítidos e proporcionais
@@ -806,10 +806,11 @@ function renderLabelsNav() {
     );
   }
 
+  // Mostra as abas no topo apenas com o nome da tag (sem o #)
   const activeLabels = getActiveLabelsWithCounts();
   activeLabels.forEach(lbl => {
     els.projectsBar.appendChild(
-      createFilterTab(`label:${lbl.name}`, `#${lbl.name}`, lbl.count)
+      createFilterTab(`label:${lbl.name}`, lbl.name, lbl.count)
     );
   });
 
@@ -819,7 +820,7 @@ function renderLabelsNav() {
     els.viewTitle.textContent = 'Hoje & Atrasadas';
   } else if (state.activeFilter.startsWith('label:')) {
     const lblName = state.activeFilter.slice('label:'.length);
-    els.viewTitle.textContent = `#${lblName}`;
+    els.viewTitle.textContent = lblName;
   }
 }
 
@@ -847,7 +848,8 @@ function renderQuickLabelChips() {
     chip.type = 'button';
     chip.className = 'chip';
     const tagText = `#${lbl.name.replace(/\s+/g, '')}`;
-    chip.textContent = tagText;
+    // No chip exibe apenas o texto da tag (sem o #), mas ao clicar insere com o #
+    chip.textContent = lbl.name;
     chip.title = `Inserir ${tagText} na tarefa`;
     chip.addEventListener('click', () => insertLabelTagInInput(tagText));
     els.projectChips.appendChild(chip);
@@ -986,11 +988,12 @@ function renderTasks() {
       const meta = document.createElement('div');
       meta.className = 'task-meta';
 
+      // Mostra as tags da tarefa APENAS com o texto (sem o #)
       taskLabels.forEach(lbl => {
         const lblTag = document.createElement('span');
         lblTag.className = 'tag-project';
-        lblTag.textContent = `#${lbl}`;
-        lblTag.title = `Filtrar por #${lbl}`;
+        lblTag.textContent = lbl;
+        lblTag.title = `Filtrar por ${lbl}`;
         lblTag.addEventListener('click', () => {
           state.activeFilter = `label:${lbl}`;
           saveCache();

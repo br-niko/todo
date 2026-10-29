@@ -1,10 +1,10 @@
-const CACHE_NAME = 'eink-tasks-v10';
+const CACHE_NAME = 'eink-tasks-v11';
 const ASSETS = [
   './',
   './index.html',
-  './style.css?v=10',
-  './app.js?v=10',
-  './manifest.json?v=10',
+  './style.css?v=11',
+  './app.js?v=11',
+  './manifest.json?v=11',
   './icon.svg',
   './icon-192.png',
   './icon-512.png'
@@ -29,26 +29,25 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
 
-  // Ignora requisições de outros domínios (API Todoist, Google Fonts, etc.)
-  if (event.request.method !== 'GET' || url.origin !== self.location.origin) {
+  // Não intercepta chamadas externas (como API do Todoist ou Google Fonts)
+  if (url.origin !== location.origin) {
     return;
   }
 
-  // Não intercepta /todo sem barra final para deixar o navegador seguir o redirect 301 nativo
-  if (url.pathname.endsWith('/todo')) {
-    return;
-  }
-
-  // Estratégia Network-First com cache: 'no-cache' para nunca ficar preso no cache antigo
+  // Network-first com fallback para cache
   event.respondWith(
-    fetch(event.request, { cache: 'no-cache' })
+    fetch(event.request)
       .then(response => {
-        if (response && response.status === 200 && !response.redirected) {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+        if (response && response.status === 200 && response.type === 'basic') {
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, responseToCache);
+          });
         }
         return response;
       })
-      .catch(() => caches.match(event.request))
+      .catch(() => {
+        return caches.match(event.request);
+      })
   );
 });

@@ -10,7 +10,7 @@
       location.replace(location.pathname + '/' + location.search + location.hash);
     }
   </script>
-  <link rel="manifest" href="manifest.json?v=10">
+  <link rel="manifest" href="manifest.json?v=11">
   <link rel="icon" type="image/svg+xml" href="icon.svg">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="apple-touch-icon" href="icon-192.png">
@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=10">
+  <link rel="stylesheet" href="style.css?v=11">
 </head>
 <body>
   <div id="app" class="container">
@@ -119,6 +119,44 @@
     </footer>
   </div>
 
+  <!-- MODAL DE SUBTAREFAS COMPACTO PARA TELAS E-INK -->
+  <div id="subtasks-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="subtasks-modal-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-header-info">
+          <h2 id="subtasks-modal-title">Subtarefas</h2>
+          <div id="subtasks-parent-name" class="subtasks-parent-name"></div>
+        </div>
+        <button id="btn-close-subtasks" class="btn btn-icon" aria-label="Fechar">
+          <svg class="icon-svg icon-sm" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="add-subtask-form" autocomplete="off">
+          <div class="input-row">
+            <input
+              type="text"
+              id="subtask-input"
+              placeholder="Nova subtarefa... (Enter)"
+              required
+            >
+            <button type="submit" id="btn-add-subtask" class="btn btn-primary btn-sm">+ Adicionar</button>
+          </div>
+        </form>
+
+        <ul id="subtasks-list" class="tasks-list subtasks-list">
+          <!-- Subtarefas renderizadas aqui -->
+        </ul>
+        <div id="subtasks-empty" class="subtasks-empty hidden">
+          Nenhuma subtarefa ainda.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="btn-done-subtasks" class="btn btn-primary btn-sm">Concluído</button>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL DE CONFIGURAÇÃO COMPACTO PARA TELAS E-INK PEQUENAS -->
   <div id="settings-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
     <div class="modal-card">
@@ -159,11 +197,11 @@
     </div>
   </div>
 
-  <script src="app.js?v=10"></script>
+  <script src="app.js?v=11"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=10').then(reg => {
+        navigator.serviceWorker.register('./sw.js?v=11').then(reg => {
           reg.update();
         }).catch(() => {});
       });

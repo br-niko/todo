@@ -171,7 +171,6 @@ html, body {
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
-  align-items: center;
 }
 
 .project-tab {
@@ -187,13 +186,12 @@ html, body {
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 3px;
+  gap: 4px;
 }
 
 .project-tab.active {
   background-color: var(--fg);
   color: var(--bg);
-  font-weight: 500;
 }
 
 .project-count {
@@ -201,26 +199,18 @@ html, body {
   opacity: 0.85;
 }
 
-.project-count::before {
-  content: "(";
-}
-
-.project-count::after {
-  content: ")";
-}
-
-/* SEÇÃO ADICIONAR TAREFA (COLAPSÁVEL) */
+/* FORMULÁRIO DE NOVA TAREFA COMPACTO */
 .add-task-section {
   border: var(--border-w) solid var(--border);
   border-radius: var(--radius-md);
-  padding: 8px;
+  padding: 8px 10px;
   margin-bottom: 10px;
 }
 
 .input-row {
   display: flex;
   gap: 6px;
-  align-items: center;
+  width: 100%;
 }
 
 input[type="text"],
@@ -244,10 +234,11 @@ input[type="password"]:focus,
 input[type="date"]:focus,
 select:focus {
   outline: var(--border-w) solid var(--fg);
-  outline-offset: 0;
+  outline-offset: 1px;
 }
 
 #task-input,
+#subtask-input,
 #new-project-input {
   flex: 1;
   min-width: 0;
@@ -265,11 +256,10 @@ select:focus {
 .quick-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
+  gap: 4px;
   align-items: center;
 }
 
-/* Chips rápidos de #label no formulário */
 .chip {
   background-color: var(--bg);
   color: var(--fg);
@@ -293,7 +283,6 @@ select:focus {
 .meta-selectors {
   display: flex;
   gap: 5px;
-  flex-wrap: wrap;
   align-items: center;
 }
 
@@ -337,7 +326,7 @@ select:focus {
   align-items: flex-start;
   justify-content: space-between;
   gap: 8px;
-  padding: 7px 2px;
+  padding: 8px 2px;
   border-bottom: var(--border-w) solid var(--border);
 }
 
@@ -349,18 +338,18 @@ select:focus {
   min-width: 0;
 }
 
-/* CHECKBOX EQUILIBRADO + PONTINHOS DE CONTAGEM */
 .task-checkbox-wrap {
   display: flex;
   align-items: center;
   gap: 4px;
-  margin-top: 2px;
+  margin-top: 1px;
 }
 
+/* CHECKBOX LEVE DE 20PX */
 .task-checkbox {
-  width: 21px;
-  height: 21px;
-  min-width: 21px;
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
   border: var(--border-w) solid var(--border);
   border-radius: var(--radius-sm);
   background-color: var(--bg);
@@ -484,6 +473,20 @@ select:focus {
   color: var(--bg);
 }
 
+.tag-subtasks {
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 1px 5px;
+  font-size: 12.5px;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.tag-subtasks:active {
+  background-color: var(--fg);
+  color: var(--bg);
+}
+
 .task-actions {
   display: flex;
   gap: 4px;
@@ -505,12 +508,20 @@ select:focus {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 3px;
+  line-height: 1;
 }
 
 .btn-task-action:active,
 .btn-task-action.btn-save {
   background: var(--fg);
   color: var(--bg);
+}
+
+.btn-subtask-count {
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
 }
 
 .empty-state {
@@ -566,6 +577,24 @@ select:focus {
   align-items: center;
   border-bottom: var(--border-w) solid var(--border);
   padding-bottom: 6px;
+  gap: 8px;
+}
+
+.modal-header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.subtasks-parent-name {
+  font-size: 13.5px;
+  font-weight: 400;
+  opacity: 0.8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .modal-header h2 {
@@ -577,6 +606,26 @@ select:focus {
   display: flex;
   flex-direction: column;
   gap: 6px;
+}
+
+/* SUBTAREFAS NO MODAL */
+.subtasks-list {
+  max-height: 42vh;
+  overflow-y: auto;
+  border-top: var(--border-w) solid var(--border);
+}
+
+.subtasks-list .task-item {
+  padding: 6px 2px;
+}
+
+.subtasks-empty {
+  text-align: center;
+  padding: 14px 8px;
+  font-size: 13.5px;
+  font-weight: 400;
+  border: var(--border-w) dashed var(--border);
+  border-radius: var(--radius-sm);
 }
 
 .help-text {

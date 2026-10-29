@@ -1,11 +1,12 @@
 /**
  * E-Ink Todoist App
+ * - Tipografia IBM Plex Sans com linhas finas e visual balanceado
  * - Sincroniza diretamente com a Unified API v1 do Todoist (https://api.todoist.com/api/v1)
- * - Usa #label para representar as Labels (etiquetas) do Todoist!
- * - No topo mostra apenas as #labels que têm tarefas não concluídas.
+ * - Usa #label para representar as Labels (etiquetas) do Todoist
+ * - Suporta subtarefas (parent_id) com botão e modal dedicado
  * - Suporta datas personalizadas (seletor de calendário ou @25/12, @hoje, @amanha)
- * - Edição inline com lápis (texto + data + #labels)
- * - Checkbox com preenchimento preto anti-ghosting e contagem regressiva de pontinhos verticais
+ * - Edição inline com ícones SVG nítidos e proporcionais
+ * - Checkbox com preenchimento preto anti-ghosting e contagem regressiva
  */
 
 const TODOIST_API_BASE = 'https://api.todoist.com/api/v1';
@@ -13,7 +14,8 @@ const TODOIST_API_BASE = 'https://api.todoist.com/api/v1';
 const ICONS = {
   EDIT: `<svg class="icon-svg icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>`,
   CLOSE: `<svg class="icon-svg icon-sm" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
-  CHECK: `<svg class="icon-svg icon-sm" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>`
+  CHECK: `<svg class="icon-svg icon-sm" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>`,
+  SUBTASK: `<svg class="icon-svg icon-sm" viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 10 20 15 15 20"/><path d="M4 4v7a4 4 0 0 0 4 4h12"/></svg>`
 };
 
 const STORAGE_KEYS = {
@@ -31,7 +33,8 @@ const state = {
   activeFilter: localStorage.getItem(STORAGE_KEYS.ACTIVE_FILTER) || 'all', // 'all', 'today' ou 'label:<name>'
   isSyncing: false,
   pendingCompletions: new Map(), // taskId -> intervalId
-  editingTaskId: null
+  editingTaskId: null,
+  activeParentTask: null // Tarefa pai aberta no modal de subtarefas
 };
 
 // Elementos DOM
@@ -55,6 +58,16 @@ const els = {
   emptyState: document.getElementById('empty-state'),
   tasksCount: document.getElementById('tasks-count'),
   lastSyncTime: document.getElementById('last-sync-time'),
+  // Modal de Subtarefas
+  subtasksModal: document.getElementById('subtasks-modal'),
+  subtasksParentName: document.getElementById('subtasks-parent-name'),
+  subtasksList: document.getElementById('subtasks-list'),
+  subtasksEmpty: document.getElementById('subtasks-empty'),
+  addSubtaskForm: document.getElementById('add-subtask-form'),
+  subtaskInput: document.getElementById('subtask-input'),
+  btnCloseSubtasks: document.getElementById('btn-close-subtasks'),
+  btnDoneSubtasks: document.getElementById('btn-done-subtasks'),
+  // Modal de Configurações
   settingsModal: document.getElementById('settings-modal'),
   btnCloseSettings: document.getElementById('btn-close-settings'),
   apiTokenInput: document.getElementById('api-token-input'),
@@ -69,21 +82,20 @@ const els = {
    INICIALIZAÇÃO
    ========================================================================== */
 function init() {
-  document.body.classList.remove('font-large', 'font-xlarge');
   renderAll();
   bindEvents();
 
   const lastSync = localStorage.getItem(STORAGE_KEYS.LAST_SYNC);
   if (lastSync) {
-    els.lastSyncTime.textContent = `Sync: ${lastSync}`;
+    els.lastSyncTime.textContent = `Sincronizado: ${lastSync}`;
   }
 
   if (state.token) {
     syncWithTodoist();
   } else {
-    updateSyncBadge('Local', false);
+    updateSyncBadge('Modo Local (Sem Token)', false);
     showAlert(
-      'Modo Local. Toque em ⚙ no topo para colar seu Token do Todoist.'
+      'Você está no Modo Local. Clique no ícone de engrenagem no topo para colar seu Token do Todoist.'
     );
   }
 }
@@ -157,7 +169,7 @@ async function syncWithTodoist() {
   if (state.isSyncing) return;
 
   state.isSyncing = true;
-  updateSyncBadge('Sync...', true);
+  updateSyncBadge('Sincronizando...', true);
   hideAlert();
 
   try {
@@ -171,13 +183,16 @@ async function syncWithTodoist() {
 
     const nowStr = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
     localStorage.setItem(STORAGE_KEYS.LAST_SYNC, nowStr);
-    els.lastSyncTime.textContent = `Sync: ${nowStr}`;
+    els.lastSyncTime.textContent = `Sincronizado às ${nowStr}`;
 
     saveCache();
     renderAll();
-    updateSyncBadge('OK', false);
+    if (state.activeParentTask) {
+      renderSubtasksModalList();
+    }
+    updateSyncBadge('Todoist OK', false);
   } catch (err) {
-    updateSyncBadge('Erro', false);
+    updateSyncBadge('Erro Sync', false);
     showAlert(err.message);
   } finally {
     state.isSyncing = false;
@@ -306,7 +321,7 @@ function parseBrDateToIso(brStr) {
 }
 
 /* ==========================================================================
-   OPERAÇÕES DE TAREFAS E LABELS
+   OPERAÇÕES DE TAREFAS, LABELS E SUBTAREFAS
    ========================================================================== */
 async function createLabel(name) {
   const cleanName = name.trim().replace(/^[#@]/, '');
@@ -330,28 +345,6 @@ async function createLabel(name) {
     saveCache();
     renderAll();
     return localLbl;
-  }
-}
-
-function openAddTaskBox() {
-  els.addTaskSection.classList.remove('hidden');
-  els.taskInput.focus();
-}
-
-function closeAddTaskBox() {
-  els.addTaskSection.classList.add('hidden');
-  els.taskInput.value = '';
-  els.taskDueSelect.value = '';
-  els.taskCustomDate.value = '';
-  els.taskCustomDate.classList.add('hidden');
-  els.taskPrioritySelect.value = '1';
-}
-
-function toggleAddTaskBox() {
-  if (els.addTaskSection.classList.contains('hidden')) {
-    openAddTaskBox();
-  } else {
-    closeAddTaskBox();
   }
 }
 
@@ -411,6 +404,11 @@ async function handleAddTask(e) {
       });
     }
 
+    els.taskInput.value = '';
+    els.taskDueSelect.value = '';
+    els.taskCustomDate.value = '';
+    els.taskCustomDate.classList.add('hidden');
+    els.taskPrioritySelect.value = '1';
     closeAddTaskBox();
     saveCache();
     renderAll();
@@ -419,6 +417,139 @@ async function handleAddTask(e) {
   } finally {
     els.taskInput.disabled = false;
   }
+}
+
+/**
+ * Adiciona uma subtarefa vinculada à tarefa pai aberta no modal
+ */
+async function handleAddSubtask(e) {
+  e.preventDefault();
+  if (!state.activeParentTask) return;
+
+  const rawText = els.subtaskInput.value.trim();
+  if (!rawText) return;
+
+  const parentId = String(state.activeParentTask.id);
+  els.subtaskInput.disabled = true;
+
+  try {
+    if (state.token && !parentId.startsWith('local-')) {
+      const payload = {
+        content: rawText,
+        parent_id: parentId
+      };
+
+      const createdSubtask = await todoistFetch('/tasks', {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      });
+
+      state.tasks.push(createdSubtask);
+    } else {
+      state.tasks.push({
+        id: 'local-task-' + Date.now(),
+        content: rawText,
+        parent_id: parentId,
+        priority: 1,
+        added_at: new Date().toISOString()
+      });
+    }
+
+    els.subtaskInput.value = '';
+    saveCache();
+    renderSubtasksModalList();
+    renderTasks();
+  } catch (err) {
+    showAlert(`Não foi possível criar a subtarefa: ${err.message}`);
+  } finally {
+    els.subtaskInput.disabled = false;
+    els.subtaskInput.focus();
+  }
+}
+
+function openSubtasksModal(task) {
+  state.activeParentTask = task;
+  els.subtasksParentName.textContent = `Tarefa: "${task.content}"`;
+  renderSubtasksModalList();
+  els.subtasksModal.classList.remove('hidden');
+  setTimeout(() => {
+    els.subtaskInput.focus();
+  }, 40);
+}
+
+function closeSubtasksModal() {
+  state.activeParentTask = null;
+  els.subtasksModal.classList.add('hidden');
+  renderAll();
+}
+
+function renderSubtasksModalList() {
+  if (!state.activeParentTask) return;
+
+  const parentId = String(state.activeParentTask.id);
+  const subtasks = state.tasks.filter(t => String(t.parent_id) === parentId);
+
+  els.subtasksList.innerHTML = '';
+
+  if (subtasks.length === 0) {
+    els.subtasksEmpty.classList.remove('hidden');
+  } else {
+    els.subtasksEmpty.classList.add('hidden');
+  }
+
+  subtasks.forEach(sub => {
+    const li = document.createElement('li');
+    li.className = 'task-item';
+
+    const left = document.createElement('div');
+    left.className = 'task-left';
+
+    const checkboxWrap = document.createElement('div');
+    checkboxWrap.className = 'task-checkbox-wrap';
+
+    const checkbox = document.createElement('button');
+    checkbox.type = 'button';
+    checkbox.className = `task-checkbox priority-${sub.priority || 1}`;
+    checkbox.setAttribute('aria-label', 'Concluir subtarefa');
+
+    const dotsContainer = document.createElement('div');
+    dotsContainer.className = 'countdown-dots hidden';
+
+    checkbox.addEventListener('click', () =>
+      toggleCompleteTaskWithCountdown(sub, li, checkbox, dotsContainer)
+    );
+
+    checkboxWrap.appendChild(checkbox);
+    checkboxWrap.appendChild(dotsContainer);
+
+    const contentWrap = document.createElement('div');
+    contentWrap.className = 'task-content-wrap';
+
+    const title = document.createElement('div');
+    title.className = 'task-title';
+    title.textContent = sub.content;
+    contentWrap.appendChild(title);
+
+    left.appendChild(checkboxWrap);
+    left.appendChild(contentWrap);
+
+    const actions = document.createElement('div');
+    actions.className = 'task-actions';
+
+    const delBtn = document.createElement('button');
+    delBtn.type = 'button';
+    delBtn.className = 'btn-task-action';
+    delBtn.title = 'Excluir subtarefa';
+    delBtn.setAttribute('aria-label', 'Excluir subtarefa');
+    delBtn.innerHTML = ICONS.CLOSE;
+    delBtn.addEventListener('click', () => deleteTask(sub.id));
+
+    actions.appendChild(delBtn);
+
+    li.appendChild(left);
+    li.appendChild(actions);
+    els.subtasksList.appendChild(li);
+  });
 }
 
 async function saveEditedTask(task, newRawText, newDateValue) {
@@ -526,9 +657,12 @@ function toggleCompleteTaskWithCountdown(task, liElement, checkboxBtn, dotsConta
         if (state.token && !key.startsWith('local-')) {
           await todoistFetch(`/tasks/${task.id}/close`, { method: 'POST' });
         }
-        state.tasks = state.tasks.filter(t => String(t.id) !== key);
+        state.tasks = state.tasks.filter(t => String(t.id) !== key && String(t.parent_id) !== key);
         saveCache();
         renderAll();
+        if (state.activeParentTask) {
+          renderSubtasksModalList();
+        }
       } catch (err) {
         liElement.classList.remove('completing');
         checkboxBtn.textContent = task.priority === 4 ? '!' : '';
@@ -561,9 +695,12 @@ async function deleteTask(taskId) {
     if (state.token && !key.startsWith('local-')) {
       await todoistFetch(`/tasks/${taskId}`, { method: 'DELETE' });
     }
-    state.tasks = state.tasks.filter(t => String(t.id) !== key);
+    state.tasks = state.tasks.filter(t => String(t.id) !== key && String(t.parent_id) !== key);
     saveCache();
     renderAll();
+    if (state.activeParentTask) {
+      renderSubtasksModalList();
+    }
   } catch (err) {
     showAlert(`Erro ao excluir tarefa: ${err.message}`);
   }
@@ -602,7 +739,7 @@ function isOverdue(task) {
 }
 
 function getFilteredTasks() {
-  let list = [...state.tasks];
+  let list = state.tasks.filter(t => !t.parent_id);
 
   if (state.activeFilter === 'today') {
     list = list.filter(isDueTodayOrOverdue);
@@ -625,7 +762,7 @@ function getFilteredTasks() {
 
 function getActiveLabelsWithCounts() {
   const counts = new Map();
-  state.tasks.forEach(t => {
+  state.tasks.filter(t => !t.parent_id).forEach(t => {
     if (Array.isArray(t.labels)) {
       t.labels.forEach(lbl => {
         counts.set(lbl, (counts.get(lbl) || 0) + 1);
@@ -655,8 +792,9 @@ function renderAll() {
 function renderLabelsNav() {
   els.projectsBar.innerHTML = '';
 
-  const totalCount = state.tasks.length;
-  const todayCount = state.tasks.filter(isDueTodayOrOverdue).length;
+  const rootTasks = state.tasks.filter(t => !t.parent_id);
+  const totalCount = rootTasks.length;
+  const todayCount = rootTasks.filter(isDueTodayOrOverdue).length;
 
   els.projectsBar.appendChild(
     createFilterTab('all', 'Todas', totalCount)
@@ -678,7 +816,7 @@ function renderLabelsNav() {
   if (state.activeFilter === 'all') {
     els.viewTitle.textContent = 'Tarefas';
   } else if (state.activeFilter === 'today') {
-    els.viewTitle.textContent = 'Hoje';
+    els.viewTitle.textContent = 'Hoje & Atrasadas';
   } else if (state.activeFilter.startsWith('label:')) {
     const lblName = state.activeFilter.slice('label:'.length);
     els.viewTitle.textContent = `#${lblName}`;
@@ -717,11 +855,22 @@ function renderQuickLabelChips() {
 }
 
 function insertLabelTagInInput(tag) {
+  openAddTaskBox();
   const current = els.taskInput.value.trim();
   if (!current.includes(tag)) {
     els.taskInput.value = current ? `${current} ${tag} ` : `${tag} `;
   }
   els.taskInput.focus();
+}
+
+function openAddTaskBox() {
+  els.addTaskSection.classList.remove('hidden');
+  els.taskInput.focus();
+}
+
+function closeAddTaskBox() {
+  els.addTaskSection.classList.add('hidden');
+  els.taskInput.value = '';
 }
 
 function renderTasks() {
@@ -736,6 +885,8 @@ function renderTasks() {
 
   filtered.forEach(task => {
     const isEditing = String(state.editingTaskId) === String(task.id);
+    const subtasks = state.tasks.filter(t => String(t.parent_id) === String(task.id));
+
     const li = document.createElement('li');
     li.className = 'task-item';
 
@@ -790,12 +941,14 @@ function renderTasks() {
       saveBtn.type = 'submit';
       saveBtn.className = 'btn-task-action btn-save';
       saveBtn.title = 'Salvar alterações';
+      saveBtn.setAttribute('aria-label', 'Salvar alterações');
       saveBtn.innerHTML = ICONS.CHECK;
 
       const cancelBtn = document.createElement('button');
       cancelBtn.type = 'button';
       cancelBtn.className = 'btn-task-action';
       cancelBtn.title = 'Cancelar edição';
+      cancelBtn.setAttribute('aria-label', 'Cancelar edição');
       cancelBtn.innerHTML = ICONS.CLOSE;
       cancelBtn.addEventListener('click', () => {
         state.editingTaskId = null;
@@ -862,6 +1015,15 @@ function renderTasks() {
         meta.appendChild(dueTag);
       }
 
+      if (subtasks.length > 0) {
+        const subTag = document.createElement('span');
+        subTag.className = 'tag-subtasks';
+        subTag.textContent = `↳ ${subtasks.length}`;
+        subTag.title = `Abrir subtarefas (${subtasks.length})`;
+        subTag.addEventListener('click', () => openSubtasksModal(task));
+        meta.appendChild(subTag);
+      }
+
       if (meta.children.length > 0) {
         contentWrap.appendChild(meta);
       }
@@ -874,6 +1036,20 @@ function renderTasks() {
     actions.className = 'task-actions';
 
     if (!isEditing) {
+      // Botão de subtarefas perfeitamente centralizado com ícone SVG
+      const subtaskBtn = document.createElement('button');
+      subtaskBtn.type = 'button';
+      subtaskBtn.className = 'btn-task-action';
+      subtaskBtn.title = `Subtarefas (${subtasks.length})`;
+      subtaskBtn.setAttribute('aria-label', `Subtarefas (${subtasks.length})`);
+      if (subtasks.length > 0) {
+        subtaskBtn.innerHTML = `${ICONS.SUBTASK}<span class="btn-subtask-count">${subtasks.length}</span>`;
+      } else {
+        subtaskBtn.innerHTML = ICONS.SUBTASK;
+      }
+      subtaskBtn.addEventListener('click', () => openSubtasksModal(task));
+      actions.appendChild(subtaskBtn);
+
       const editBtn = document.createElement('button');
       editBtn.type = 'button';
       editBtn.className = 'btn-task-action';
@@ -931,7 +1107,7 @@ function updateSyncBadge(text, isSyncing) {
 function showAlert(msg) {
   els.alertBox.innerHTML = `
     <span>${escapeHtml(msg)}</span>
-    <button type="button" class="btn btn-icon" onclick="document.getElementById('alert-box').classList.add('hidden')">✕</button>
+    <button type="button" class="btn btn-icon" onclick="document.getElementById('alert-box').classList.add('hidden')" aria-label="Fechar alerta">${ICONS.CLOSE}</button>
   `;
   els.alertBox.classList.remove('hidden');
 }
@@ -957,14 +1133,26 @@ function saveTokenAndSync() {
   if (newToken) {
     syncWithTodoist();
   } else {
-    updateSyncBadge('Local', false);
+    updateSyncBadge('Modo Local', false);
     renderAll();
   }
 }
 
 function bindEvents() {
-  els.btnToggleAdd.addEventListener('click', toggleAddTaskBox);
+  els.btnToggleAdd.addEventListener('click', () => {
+    if (els.addTaskSection.classList.contains('hidden')) {
+      openAddTaskBox();
+    } else {
+      closeAddTaskBox();
+    }
+  });
+
   els.btnCancelAdd.addEventListener('click', closeAddTaskBox);
+
+  // Eventos do modal de subtarefas
+  els.addSubtaskForm.addEventListener('submit', handleAddSubtask);
+  els.btnCloseSubtasks.addEventListener('click', closeSubtasksModal);
+  els.btnDoneSubtasks.addEventListener('click', closeSubtasksModal);
 
   els.taskInput.addEventListener('keydown', e => {
     if (e.key === 'Escape') {

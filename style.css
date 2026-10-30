@@ -244,6 +244,50 @@ select:focus {
   min-width: 0;
 }
 
+.desc-row {
+  margin-top: 5px;
+  width: 100%;
+}
+
+textarea {
+  background-color: var(--bg);
+  color: var(--fg);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 5px 8px;
+  font-size: 14.5px;
+  font-family: inherit;
+  font-weight: 400;
+  outline: none;
+  resize: vertical;
+  line-height: 1.35;
+  box-sizing: border-box;
+}
+
+textarea:focus {
+  outline: var(--border-w) solid var(--fg);
+  outline-offset: 1px;
+}
+
+#task-desc-input {
+  width: 100%;
+  min-height: 44px;
+  max-height: 120px;
+}
+
+.subtask-desc-row {
+  margin-top: 4px;
+  margin-bottom: 6px;
+}
+
+.subtask-desc-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 4px 8px !important;
+  min-height: 28px !important;
+  font-size: 13.5px !important;
+}
+
 .quick-options-row {
   display: flex;
   justify-content: space-between;
@@ -408,10 +452,16 @@ select:focus {
 /* EDIÇÃO INLINE DA TAREFA */
 .task-edit-form {
   display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
+.edit-row-primary {
+  display: flex;
   gap: 5px;
   align-items: center;
   width: 100%;
-  flex-wrap: wrap;
 }
 
 .task-edit-input {
@@ -426,6 +476,43 @@ select:focus {
   padding: 3px 6px !important;
   min-height: 30px !important;
   font-size: 14.5px !important;
+}
+
+.task-edit-desc {
+  width: 100%;
+  min-height: 42px;
+  max-height: 120px;
+  font-size: 14px !important;
+  line-height: 1.35;
+  padding: 4px 8px !important;
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: inherit;
+  box-sizing: border-box;
+  resize: vertical;
+}
+
+.task-edit-desc:focus {
+  outline: var(--border-w) solid var(--fg);
+  outline-offset: 1px;
+}
+
+/* DESCRIÇÃO DA TAREFA */
+.task-desc {
+  font-size: 13.5px;
+  font-weight: 400;
+  line-height: 1.35;
+  color: var(--fg);
+  word-break: break-word;
+  white-space: pre-wrap;
+  margin: 1px 0 2px 0;
+}
+
+.task-item.completing .task-desc {
+  text-decoration: line-through;
+  opacity: 0.6;
 }
 
 /* METADADOS E TAGS DA TAREFA (Pequenas com retângulo fino em volta) */

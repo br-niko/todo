@@ -49,6 +49,7 @@ const els = {
   addTaskSection: document.getElementById('add-task-section'),
   addTaskForm: document.getElementById('add-task-form'),
   taskInput: document.getElementById('task-input'),
+  taskDescInput: document.getElementById('task-desc-input'),
   btnCancelAdd: document.getElementById('btn-cancel-add'),
   taskDueSelect: document.getElementById('task-due-select'),
   taskCustomDate: document.getElementById('task-custom-date'),
@@ -65,6 +66,7 @@ const els = {
   subtasksEmpty: document.getElementById('subtasks-empty'),
   addSubtaskForm: document.getElementById('add-subtask-form'),
   subtaskInput: document.getElementById('subtask-input'),
+  subtaskDescInput: document.getElementById('subtask-desc-input'),
   btnCloseSubtasks: document.getElementById('btn-close-subtasks'),
   btnDoneSubtasks: document.getElementById('btn-done-subtasks'),
   // Modal de Configurações
@@ -353,6 +355,8 @@ async function handleAddTask(e) {
   const rawText = els.taskInput.value.trim();
   if (!rawText) return;
 
+  const description = els.taskDescInput ? els.taskDescInput.value.trim() : '';
+
   const {
     content,
     labels,
@@ -362,6 +366,7 @@ async function handleAddTask(e) {
   } = parseTaskInput(rawText, null, false);
 
   els.taskInput.disabled = true;
+  if (els.taskDescInput) els.taskDescInput.disabled = true;
 
   try {
     if (state.token) {
@@ -369,6 +374,9 @@ async function handleAddTask(e) {
         content,
         priority
       };
+      if (description) {
+        payload.description = description;
+      }
       if (labels && labels.length > 0) {
         payload.labels = labels;
       }
@@ -397,6 +405,7 @@ async function handleAddTask(e) {
       state.tasks.push({
         id: 'local-task-' + Date.now(),
         content,
+        description: description || '',
         labels: labels || [],
         priority,
         due: dueObj,
@@ -405,6 +414,7 @@ async function handleAddTask(e) {
     }
 
     els.taskInput.value = '';
+    if (els.taskDescInput) els.taskDescInput.value = '';
     els.taskDueSelect.value = '';
     els.taskCustomDate.value = '';
     els.taskCustomDate.classList.add('hidden');
@@ -416,6 +426,7 @@ async function handleAddTask(e) {
     showAlert(`Não foi possível criar a tarefa: ${err.message}`);
   } finally {
     els.taskInput.disabled = false;
+    if (els.taskDescInput) els.taskDescInput.disabled = false;
   }
 }
 
@@ -429,8 +440,10 @@ async function handleAddSubtask(e) {
   const rawText = els.subtaskInput.value.trim();
   if (!rawText) return;
 
+  const subDesc = els.subtaskDescInput ? els.subtaskDescInput.value.trim() : '';
   const parentId = String(state.activeParentTask.id);
   els.subtaskInput.disabled = true;
+  if (els.subtaskDescInput) els.subtaskDescInput.disabled = true;
 
   try {
     if (state.token && !parentId.startsWith('local-')) {
@@ -438,6 +451,9 @@ async function handleAddSubtask(e) {
         content: rawText,
         parent_id: parentId
       };
+      if (subDesc) {
+        payload.description = subDesc;
+      }
 
       const createdSubtask = await todoistFetch('/tasks', {
         method: 'POST',
@@ -449,6 +465,7 @@ async function handleAddSubtask(e) {
       state.tasks.push({
         id: 'local-task-' + Date.now(),
         content: rawText,
+        description: subDesc || '',
         parent_id: parentId,
         priority: 1,
         added_at: new Date().toISOString()
@@ -456,6 +473,7 @@ async function handleAddSubtask(e) {
     }
 
     els.subtaskInput.value = '';
+    if (els.subtaskDescInput) els.subtaskDescInput.value = '';
     saveCache();
     renderSubtasksModalList();
     renderTasks();
@@ -463,6 +481,7 @@ async function handleAddSubtask(e) {
     showAlert(`Não foi possível criar a subtarefa: ${err.message}`);
   } finally {
     els.subtaskInput.disabled = false;
+    if (els.subtaskDescInput) els.subtaskDescInput.disabled = false;
     els.subtaskInput.focus();
   }
 }
@@ -530,6 +549,13 @@ function renderSubtasksModalList() {
     title.textContent = sub.content;
     contentWrap.appendChild(title);
 
+    if (sub.description && sub.description.trim()) {
+      const subDesc = document.createElement('div');
+      subDesc.className = 'task-desc';
+      subDesc.textContent = sub.description;
+      contentWrap.appendChild(subDesc);
+    }
+
     left.appendChild(checkboxWrap);
     left.appendChild(contentWrap);
 
@@ -552,7 +578,7 @@ function renderSubtasksModalList() {
   });
 }
 
-async function saveEditedTask(task, newRawText, newDateValue) {
+async function saveEditedTask(task, newRawText, newDateValue, newDescription = '') {
   const trimmed = newRawText.trim();
   if (!trimmed) {
     state.editingTaskId = null;
@@ -573,12 +599,14 @@ async function saveEditedTask(task, newRawText, newDateValue) {
   const finalDueDate = newDateValue || dueDateIso || null;
   const previousDueDate = task.due?.date ? task.due.date.substring(0, 10) : '';
   const dateChangedByPicker = newDateValue !== previousDueDate;
+  const finalDesc = (newDescription || '').trim();
 
   try {
     if (state.token && !String(task.id).startsWith('local-')) {
       const payload = {
         content,
-        labels
+        labels,
+        description: finalDesc
       };
       if (hasPriorityOverride) {
         payload.priority = priority;
@@ -605,6 +633,7 @@ async function saveEditedTask(task, newRawText, newDateValue) {
       const idx = state.tasks.findIndex(t => String(t.id) === String(task.id));
       if (idx !== -1) {
         state.tasks[idx].content = content;
+        state.tasks[idx].description = finalDesc;
         state.tasks[idx].labels = labels;
         if (hasPriorityOverride) state.tasks[idx].priority = priority;
         if (finalDueDate) {
@@ -873,6 +902,7 @@ function openAddTaskBox() {
 function closeAddTaskBox() {
   els.addTaskSection.classList.add('hidden');
   els.taskInput.value = '';
+  if (els.taskDescInput) els.taskDescInput.value = '';
 }
 
 function renderTasks() {
@@ -924,6 +954,9 @@ function renderTasks() {
       editForm.className = 'task-edit-form';
       editForm.autocomplete = 'off';
 
+      const editRowPrimary = document.createElement('div');
+      editRowPrimary.className = 'edit-row-primary';
+
       const editInput = document.createElement('input');
       editInput.type = 'text';
       editInput.className = 'task-edit-input';
@@ -957,9 +990,30 @@ function renderTasks() {
         renderAll();
       });
 
+      editRowPrimary.appendChild(editInput);
+      editRowPrimary.appendChild(editDateInput);
+      editRowPrimary.appendChild(saveBtn);
+      editRowPrimary.appendChild(cancelBtn);
+
+      const editDescInput = document.createElement('textarea');
+      editDescInput.className = 'task-edit-desc';
+      editDescInput.placeholder = 'Descrição (opcional)...';
+      editDescInput.rows = 2;
+      editDescInput.value = task.description || '';
+
+      editDescInput.addEventListener('keydown', e => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          e.preventDefault();
+          editForm.requestSubmit();
+        } else if (e.key === 'Escape') {
+          state.editingTaskId = null;
+          renderAll();
+        }
+      });
+
       editForm.addEventListener('submit', e => {
         e.preventDefault();
-        saveEditedTask(task, editInput.value, editDateInput.value);
+        saveEditedTask(task, editInput.value, editDateInput.value, editDescInput.value);
       });
 
       editInput.addEventListener('keydown', e => {
@@ -969,10 +1023,8 @@ function renderTasks() {
         }
       });
 
-      editForm.appendChild(editInput);
-      editForm.appendChild(editDateInput);
-      editForm.appendChild(saveBtn);
-      editForm.appendChild(cancelBtn);
+      editForm.appendChild(editRowPrimary);
+      editForm.appendChild(editDescInput);
       contentWrap.appendChild(editForm);
 
       setTimeout(() => {
@@ -984,6 +1036,13 @@ function renderTasks() {
       title.className = 'task-title';
       title.textContent = task.content;
       contentWrap.appendChild(title);
+
+      if (task.description && task.description.trim()) {
+        const desc = document.createElement('div');
+        desc.className = 'task-desc';
+        desc.textContent = task.description;
+        contentWrap.appendChild(desc);
+      }
 
       const meta = document.createElement('div');
       meta.className = 'task-meta';
@@ -1162,6 +1221,17 @@ function bindEvents() {
       closeAddTaskBox();
     }
   });
+
+  if (els.taskDescInput) {
+    els.taskDescInput.addEventListener('keydown', e => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        els.addTaskForm.requestSubmit();
+      } else if (e.key === 'Escape') {
+        closeAddTaskBox();
+      }
+    });
+  }
 
   els.addTaskForm.addEventListener('submit', handleAddTask);
 

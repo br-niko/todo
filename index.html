@@ -10,7 +10,7 @@
       location.replace(location.pathname + '/' + location.search + location.hash);
     }
   </script>
-  <link rel="manifest" href="manifest.json?v=12">
+  <link rel="manifest" href="manifest.json?v=13">
   <link rel="icon" type="image/svg+xml" href="icon.svg">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="apple-touch-icon" href="icon-192.png">
@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=12">
+  <link rel="stylesheet" href="style.css?v=13">
 </head>
 <body>
   <div id="app" class="container">
@@ -67,6 +67,14 @@
           >
           <button type="submit" id="btn-add-task" class="btn btn-primary">Salvar</button>
           <button type="button" id="btn-cancel-add" class="btn btn-icon" title="Fechar">✕</button>
+        </div>
+
+        <div class="desc-row">
+          <textarea
+            id="task-desc-input"
+            placeholder="Descrição (opcional)..."
+            rows="2"
+          ></textarea>
         </div>
 
         <!-- Sugestões rápidas de #label + seletores de prazo e prioridade -->
@@ -142,6 +150,14 @@
             >
             <button type="submit" id="btn-add-subtask" class="btn btn-primary btn-sm">+ Adicionar</button>
           </div>
+          <div class="desc-row subtask-desc-row">
+            <input
+              type="text"
+              id="subtask-desc-input"
+              class="subtask-desc-input"
+              placeholder="Descrição da subtarefa (opcional)..."
+            >
+          </div>
         </form>
 
         <ul id="subtasks-list" class="tasks-list subtasks-list">
@@ -197,11 +213,11 @@
     </div>
   </div>
 
-  <script src="app.js?v=12"></script>
+  <script src="app.js?v=13"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=12').then(reg => {
+        navigator.serviceWorker.register('./sw.js?v=13').then(reg => {
           reg.update();
         }).catch(() => {});
       });

@@ -10,7 +10,7 @@
       location.replace(location.pathname + '/' + location.search + location.hash);
     }
   </script>
-  <link rel="manifest" href="manifest.json?v=15">
+  <link rel="manifest" href="manifest.json?v=16">
   <link rel="icon" type="image/svg+xml" href="icon.svg">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="apple-touch-icon" href="icon-192.png">
@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=15">
+  <link rel="stylesheet" href="style.css?v=16">
 </head>
 <body>
   <div id="app" class="container">
@@ -31,7 +31,7 @@
         <h1 id="current-view-title">tarefas</h1>
       </div>
       <div class="header-actions">
-        <button id="btn-toggle-add" class="btn btn-primary" title="Nova tarefa">+ Nova</button>
+        <button id="btn-toggle-add" class="btn" title="Nova tarefa">+ Nova</button>
         <button id="btn-sync" class="btn btn-icon" title="Sincronizar com Todoist" aria-label="Sincronizar">
           <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/>
@@ -215,11 +215,11 @@
     </div>
   </div>
 
-  <script src="app.js?v=15"></script>
+  <script src="app.js?v=16"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=15').then(reg => {
+        navigator.serviceWorker.register('./sw.js?v=16').then(reg => {
           reg.update();
         }).catch(() => {});
       });

@@ -140,6 +140,11 @@ html, body {
   color: var(--fg);
 }
 
+#btn-toggle-add {
+  background-color: var(--bg);
+  color: var(--fg);
+}
+
 .btn-icon {
   padding: 5px;
   min-width: 32px;

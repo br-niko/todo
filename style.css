@@ -765,11 +765,11 @@ textarea:focus {
   margin-top: 10px;
 }
 
-/* LISTA DE COMPRAS (LOCAL E ISOLADA) */
+/* LISTA DE COMPRAS (LOCAL E ISOLADA - SEM LINHAS DIVISÓRIAS E FONTE MENOR) */
 .shopping-section {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   margin-top: 2px;
 }
 
@@ -782,9 +782,9 @@ textarea:focus {
 
 .shopping-input {
   flex: 1;
-  min-height: 34px !important;
-  padding: 6px 10px !important;
-  font-size: 16px !important;
+  min-height: 30px !important;
+  padding: 4px 8px !important;
+  font-size: 14.5px !important;
   border: var(--border-w) solid var(--border);
   border-radius: var(--radius-sm);
   background-color: var(--bg);
@@ -798,13 +798,19 @@ textarea:focus {
   outline-offset: 1px;
 }
 
+#btn-add-shopping {
+  font-size: 13.5px;
+  min-height: 30px;
+  padding: 4px 8px;
+}
+
 .shopping-toolbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 3px 0 6px 0;
+  padding: 2px 0 5px 0;
   border-bottom: var(--border-w) solid var(--border);
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1.2;
   gap: 6px;
 }
@@ -812,7 +818,13 @@ textarea:focus {
 .shopping-toolbar-actions {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
+}
+
+.shopping-toolbar .btn-sm {
+  font-size: 12.5px;
+  min-height: 26px;
+  padding: 2px 7px;
 }
 
 .btn-market-mode.active {
@@ -823,18 +835,39 @@ textarea:focus {
 }
 
 .shopping-list {
-  margin-top: 2px;
+  margin-top: 1px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
 }
 
 .shopping-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 2px;
-  border-bottom: var(--border-w) solid var(--border);
-  gap: 8px;
+  padding: 4px 2px;
+  border-bottom: none;
+  gap: 6px;
   cursor: pointer;
   user-select: none;
+}
+
+.shopping-item .task-title {
+  font-size: 15px;
+  line-height: 1.25;
+}
+
+.shopping-item .task-checkbox {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  font-size: 13.5px;
+}
+
+.shopping-item .btn-task-action {
+  min-width: 26px;
+  min-height: 26px;
+  padding: 3px;
 }
 
 .shopping-item.completed .task-title {
@@ -842,7 +875,12 @@ textarea:focus {
   opacity: 0.5;
 }
 
-/* MODO MERCADO: Oculta adição de itens e ações de exclusão, expande área de toque */
+#shopping-empty {
+  font-size: 14px;
+  padding: 16px 8px;
+}
+
+/* MODO MERCADO: Oculta adição de itens e ações de exclusão, otimiza espaço de toque */
 .shopping-section.is-market-mode .shopping-add-form {
   display: none !important;
 }
@@ -852,7 +890,7 @@ textarea:focus {
 }
 
 .shopping-section.is-market-mode .shopping-item {
-  padding: 11px 4px;
+  padding: 6px 2px;
 }
 
 /* RODAPÉ */

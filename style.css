@@ -94,17 +94,15 @@ html, body {
   font-weight: 400;
   color: var(--fg);
   cursor: pointer;
-  padding: 0 1px 2px 1px;
+  padding: 0 1px;
   text-transform: lowercase;
-  opacity: 0.45;
+  opacity: 0.35;
   line-height: 1.1;
-  border-bottom: 2px solid transparent;
 }
 
 .view-switch-btn.active {
   font-weight: 600;
   opacity: 1;
-  border-bottom: 2px solid var(--fg);
 }
 
 .view-switch-sep {
@@ -808,6 +806,20 @@ textarea:focus {
   border-bottom: var(--border-w) solid var(--border);
   font-size: 13px;
   line-height: 1.2;
+  gap: 6px;
+}
+
+.shopping-toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-market-mode.active {
+  background-color: var(--fg);
+  color: var(--bg);
+  border-color: var(--fg);
+  font-weight: 600;
 }
 
 .shopping-list {
@@ -821,11 +833,26 @@ textarea:focus {
   padding: 8px 2px;
   border-bottom: var(--border-w) solid var(--border);
   gap: 8px;
+  cursor: pointer;
+  user-select: none;
 }
 
 .shopping-item.completed .task-title {
   text-decoration: line-through;
   opacity: 0.5;
+}
+
+/* MODO MERCADO: Oculta adição de itens e ações de exclusão, expande área de toque */
+.shopping-section.is-market-mode .shopping-add-form {
+  display: none !important;
+}
+
+.shopping-section.is-market-mode .shopping-item .task-actions {
+  display: none !important;
+}
+
+.shopping-section.is-market-mode .shopping-item {
+  padding: 11px 4px;
 }
 
 /* RODAPÉ */

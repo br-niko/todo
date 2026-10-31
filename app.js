@@ -25,7 +25,8 @@ const STORAGE_KEYS = {
   LAST_SYNC: 'eink_todoist_last_sync',
   ACTIVE_FILTER: 'eink_todoist_active_filter',
   SHOPPING: 'eink_shopping_list_cache',
-  VIEW: 'eink_active_view'
+  VIEW: 'eink_active_view',
+  MARKET_MODE: 'eink_shopping_market_mode'
 };
 
 const state = {
@@ -34,6 +35,7 @@ const state = {
   labels: JSON.parse(localStorage.getItem(STORAGE_KEYS.LABELS) || '[]'),
   activeFilter: localStorage.getItem(STORAGE_KEYS.ACTIVE_FILTER) || 'all', // 'all', 'today' ou 'label:<name>'
   currentView: localStorage.getItem(STORAGE_KEYS.VIEW) || 'tasks', // 'tasks' ou 'shopping'
+  isMarketMode: localStorage.getItem(STORAGE_KEYS.MARKET_MODE) === 'true',
   shoppingList: JSON.parse(localStorage.getItem(STORAGE_KEYS.SHOPPING) || '[]'),
   isSyncing: false,
   pendingCompletions: new Map(), // taskId -> intervalId
@@ -71,6 +73,7 @@ const els = {
   shoppingList: document.getElementById('shopping-list'),
   shoppingEmpty: document.getElementById('shopping-empty'),
   shoppingCountText: document.getElementById('shopping-count-text'),
+  btnToggleMarketMode: document.getElementById('btn-toggle-market-mode'),
   btnClearCompletedShopping: document.getElementById('btn-clear-completed-shopping'),
   tasksCount: document.getElementById('tasks-count'),
   footerTag: document.getElementById('footer-tag'),
@@ -811,6 +814,19 @@ function renderShoppingList() {
   if (!els.shoppingList) return;
   els.shoppingList.innerHTML = '';
 
+  const isMarket = !!state.isMarketMode;
+  if (els.shoppingSection) {
+    els.shoppingSection.classList.toggle('is-market-mode', isMarket);
+  }
+
+  if (els.btnToggleMarketMode) {
+    els.btnToggleMarketMode.classList.toggle('active', isMarket);
+    els.btnToggleMarketMode.textContent = isMarket ? '✓ No Mercado' : 'Modo Mercado';
+    els.btnToggleMarketMode.title = isMarket
+      ? 'Clique para sair do Modo Mercado e voltar a adicionar itens'
+      : 'Ocultar campo de adição e focar apenas nas compras';
+  }
+
   const items = state.shoppingList || [];
   const total = items.length;
   const completed = items.filter(it => it.completed).length;
@@ -831,12 +847,12 @@ function renderShoppingList() {
     els.tasksCount.textContent = `${pending} ${pending === 1 ? 'a comprar' : 'a comprar'}`;
   }
   if (els.footerTag) {
-    els.footerTag.textContent = 'compras';
-    els.footerTag.className = 'footer-tag';
-    els.footerTag.title = 'Lista de compras local';
+    els.footerTag.textContent = isMarket ? 'mercado' : 'compras';
+    els.footerTag.className = `footer-tag ${isMarket ? 'today' : ''}`.trim();
+    els.footerTag.title = isMarket ? 'No Modo Mercado' : 'Lista de compras local';
     els.footerTag.classList.remove('hidden');
   }
-  updateSyncStatus('lista local', false);
+  updateSyncStatus(isMarket ? 'modo mercado' : 'lista local', isMarket);
 
   items.forEach(item => {
     const li = document.createElement('li');
@@ -853,7 +869,6 @@ function renderShoppingList() {
     checkbox.className = 'task-checkbox';
     checkbox.setAttribute('aria-label', item.completed ? 'Desmarcar item' : 'Marcar item como comprado');
     checkbox.textContent = item.completed ? '✓' : '';
-    checkbox.addEventListener('click', () => toggleShoppingItem(item.id));
 
     checkboxWrap.appendChild(checkbox);
 
@@ -863,11 +878,16 @@ function renderShoppingList() {
     const title = document.createElement('div');
     title.className = 'task-title';
     title.textContent = item.text;
-    title.addEventListener('click', () => toggleShoppingItem(item.id));
     contentWrap.appendChild(title);
 
     left.appendChild(checkboxWrap);
     left.appendChild(contentWrap);
+
+    // No modo mercado, toda a linha responde ao clique com área ampla e segura
+    li.addEventListener('click', (e) => {
+      if (e.target.closest('.btn-task-action')) return;
+      toggleShoppingItem(item.id);
+    });
 
     const actions = document.createElement('div');
     actions.className = 'task-actions';
@@ -878,7 +898,10 @@ function renderShoppingList() {
     delBtn.title = 'Remover item';
     delBtn.setAttribute('aria-label', 'Remover item');
     delBtn.innerHTML = ICONS.CLOSE;
-    delBtn.addEventListener('click', () => deleteShoppingItem(item.id));
+    delBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      deleteShoppingItem(item.id);
+    });
     actions.appendChild(delBtn);
 
     li.appendChild(left);
@@ -1604,6 +1627,14 @@ function bindEvents() {
 
   if (els.shoppingAddForm) {
     els.shoppingAddForm.addEventListener('submit', handleAddShopping);
+  }
+
+  if (els.btnToggleMarketMode) {
+    els.btnToggleMarketMode.addEventListener('click', () => {
+      state.isMarketMode = !state.isMarketMode;
+      localStorage.setItem(STORAGE_KEYS.MARKET_MODE, state.isMarketMode);
+      renderShoppingList();
+    });
   }
 
   if (els.btnClearCompletedShopping) {

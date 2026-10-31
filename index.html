@@ -10,7 +10,7 @@
       location.replace(location.pathname + '/' + location.search + location.hash);
     }
   </script>
-  <link rel="manifest" href="manifest.json?v=18">
+  <link rel="manifest" href="manifest.json?v=19">
   <link rel="icon" type="image/svg+xml" href="icon.svg">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="apple-touch-icon" href="icon-192.png">
@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=18">
+  <link rel="stylesheet" href="style.css?v=19">
 </head>
 <body>
   <div id="app" class="container">
@@ -135,7 +135,10 @@
       </form>
       <div class="shopping-toolbar">
         <span id="shopping-count-text">0 itens</span>
-        <button type="button" id="btn-clear-completed-shopping" class="btn btn-sm">Limpar comprados</button>
+        <div class="shopping-toolbar-actions">
+          <button type="button" id="btn-toggle-market-mode" class="btn btn-sm btn-market-mode" title="Ocultar adição e focar apenas nas compras">Modo Mercado</button>
+          <button type="button" id="btn-clear-completed-shopping" class="btn btn-sm" title="Remover itens já comprados">Limpar</button>
+        </div>
       </div>
       <ul id="shopping-list" class="tasks-list shopping-list">
         <!-- Itens de compras renderizados aqui -->
@@ -241,11 +244,11 @@
     </div>
   </div>
 
-  <script src="app.js?v=18"></script>
+  <script src="app.js?v=19"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=18').then(reg => {
+        navigator.serviceWorker.register('./sw.js?v=19').then(reg => {
           reg.update();
         }).catch(() => {});
       });

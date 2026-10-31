@@ -58,7 +58,8 @@ const els = {
   tasksList: document.getElementById('tasks-list'),
   emptyState: document.getElementById('empty-state'),
   tasksCount: document.getElementById('tasks-count'),
-  lastSyncTime: document.getElementById('last-sync-time'),
+  footerTag: document.getElementById('footer-tag'),
+  lastSyncTime: document.getElementById('sync-status'),
   // Modal de Subtarefas
   subtasksModal: document.getElementById('subtasks-modal'),
   subtasksParentName: document.getElementById('subtasks-parent-name'),
@@ -89,13 +90,15 @@ function init() {
 
   const lastSync = localStorage.getItem(STORAGE_KEYS.LAST_SYNC);
   if (lastSync) {
-    els.lastSyncTime.textContent = `Sincronizado: ${lastSync}`;
+    updateSyncStatus(`sincronizado às ${lastSync}`, true);
+  } else {
+    updateSyncStatus('nunca sincronizado', false);
   }
 
   if (state.token) {
     syncWithTodoist();
   } else {
-    updateSyncBadge('Modo Local (Sem Token)', false);
+    updateSyncStatus('modo local', false);
     showAlert(
       'Você está no Modo Local. Clique no ícone de engrenagem no topo para colar seu Token do Todoist.'
     );
@@ -171,7 +174,7 @@ async function syncWithTodoist() {
   if (state.isSyncing) return;
 
   state.isSyncing = true;
-  updateSyncBadge('Sincronizando...', true);
+  updateSyncStatus('sincronizando...', false);
   hideAlert();
 
   try {
@@ -185,16 +188,15 @@ async function syncWithTodoist() {
 
     const nowStr = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
     localStorage.setItem(STORAGE_KEYS.LAST_SYNC, nowStr);
-    els.lastSyncTime.textContent = `Sincronizado às ${nowStr}`;
+    updateSyncStatus(`sincronizado às ${nowStr}`, true);
 
     saveCache();
     renderAll();
     if (state.activeParentTask) {
       renderSubtasksModalList();
     }
-    updateSyncBadge('Todoist OK', false);
   } catch (err) {
-    updateSyncBadge('Erro Sync', false);
+    updateSyncStatus('erro no sync', false);
     showAlert(err.message);
   } finally {
     state.isSyncing = false;
@@ -849,13 +851,9 @@ function renderLabelsNav() {
     );
   });
 
-  if (state.activeFilter === 'all') {
-    els.viewTitle.textContent = 'Tarefas';
-  } else if (state.activeFilter === 'today') {
-    els.viewTitle.textContent = 'Hoje & Atrasadas';
-  } else if (state.activeFilter.startsWith('label:')) {
-    const lblName = state.activeFilter.slice('label:'.length);
-    els.viewTitle.textContent = lblName;
+  // No topo, sempre manter "tarefas"
+  if (els.viewTitle) {
+    els.viewTitle.textContent = 'tarefas';
   }
 }
 
@@ -1187,7 +1185,8 @@ function renderTasks() {
       if (task.due && task.due.date) {
         const dueTag = document.createElement('span');
         const overdue = isOverdue(task);
-        dueTag.className = `tag-due ${overdue ? 'overdue' : ''}`;
+        const isTodayDue = task.due.date.substring(0, 10) === getTodayIso();
+        dueTag.className = `tag-due ${overdue ? 'overdue' : ''} ${isTodayDue ? 'today' : ''}`.trim();
         dueTag.textContent = formatDueDate(task.due.date);
         meta.appendChild(dueTag);
       }
@@ -1257,6 +1256,24 @@ function renderTasks() {
   });
 
   els.tasksCount.textContent = `${filtered.length} ${filtered.length === 1 ? 'tarefa' : 'tarefas'}`;
+
+  if (els.footerTag) {
+    if (state.activeFilter === 'today') {
+      els.footerTag.textContent = 'hoje';
+      els.footerTag.className = 'footer-tag today';
+      els.footerTag.title = 'Filtrando por hoje (clique para limpar)';
+      els.footerTag.classList.remove('hidden');
+    } else if (state.activeFilter.startsWith('label:')) {
+      const lblName = state.activeFilter.slice('label:'.length);
+      els.footerTag.textContent = lblName;
+      els.footerTag.className = 'footer-tag';
+      els.footerTag.title = `Filtrando por ${lblName} (clique para limpar)`;
+      els.footerTag.classList.remove('hidden');
+    } else {
+      els.footerTag.textContent = '';
+      els.footerTag.className = 'footer-tag hidden';
+    }
+  }
 }
 
 function formatDueDate(dateStr) {
@@ -1273,13 +1290,16 @@ function formatDueDate(dateStr) {
 /* ==========================================================================
    INTERFACE AUXILIAR & EVENTOS
    ========================================================================== */
+function updateSyncStatus(text, isSynced = false) {
+  if (!els.syncStatus) return;
+  const lower = String(text || '').toLowerCase();
+  els.syncStatus.textContent = lower;
+  const isSyncing = lower.includes('sincronizando');
+  els.syncStatus.className = 'meta-sync' + (isSynced ? ' synced' : (isSyncing ? ' syncing' : ''));
+}
+
 function updateSyncBadge(text, isSyncing) {
-  els.syncStatus.textContent = text;
-  if (isSyncing) {
-    els.syncStatus.classList.add('syncing');
-  } else {
-    els.syncStatus.classList.remove('syncing');
-  }
+  updateSyncStatus(text, !isSyncing && String(text).toLowerCase().includes('ok'));
 }
 
 function showAlert(msg) {
@@ -1311,7 +1331,7 @@ function saveTokenAndSync() {
   if (newToken) {
     syncWithTodoist();
   } else {
-    updateSyncBadge('Modo Local', false);
+    updateSyncStatus('modo local', false);
     renderAll();
   }
 }
@@ -1366,6 +1386,20 @@ function bindEvents() {
   els.btnSync.addEventListener('click', () => {
     syncWithTodoist();
   });
+
+  if (els.syncStatus) {
+    els.syncStatus.addEventListener('click', () => {
+      syncWithTodoist();
+    });
+  }
+
+  if (els.footerTag) {
+    els.footerTag.addEventListener('click', () => {
+      state.activeFilter = 'all';
+      saveCache();
+      renderAll();
+    });
+  }
 
   els.btnSettings.addEventListener('click', openSettingsModal);
   els.btnCloseSettings.addEventListener('click', closeSettingsModal);

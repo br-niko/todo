@@ -23,7 +23,9 @@ const STORAGE_KEYS = {
   TASKS: 'eink_todoist_tasks_cache',
   LABELS: 'eink_todoist_labels_cache',
   LAST_SYNC: 'eink_todoist_last_sync',
-  ACTIVE_FILTER: 'eink_todoist_active_filter'
+  ACTIVE_FILTER: 'eink_todoist_active_filter',
+  SHOPPING: 'eink_shopping_list_cache',
+  VIEW: 'eink_active_view'
 };
 
 const state = {
@@ -31,6 +33,8 @@ const state = {
   tasks: JSON.parse(localStorage.getItem(STORAGE_KEYS.TASKS) || '[]'),
   labels: JSON.parse(localStorage.getItem(STORAGE_KEYS.LABELS) || '[]'),
   activeFilter: localStorage.getItem(STORAGE_KEYS.ACTIVE_FILTER) || 'all', // 'all', 'today' ou 'label:<name>'
+  currentView: localStorage.getItem(STORAGE_KEYS.VIEW) || 'tasks', // 'tasks' ou 'shopping'
+  shoppingList: JSON.parse(localStorage.getItem(STORAGE_KEYS.SHOPPING) || '[]'),
   isSyncing: false,
   pendingCompletions: new Map(), // taskId -> intervalId
   editingTaskId: null,
@@ -39,7 +43,10 @@ const state = {
 
 // Elementos DOM
 const els = {
-  viewTitle: document.getElementById('current-view-title'),
+  viewTabTasks: document.getElementById('view-tab-tasks'),
+  viewTabShopping: document.getElementById('view-tab-shopping'),
+  tasksMain: document.getElementById('tasks-main'),
+  projectsNav: document.querySelector('.projects-nav'),
   syncStatus: document.getElementById('sync-status'),
   btnToggleAdd: document.getElementById('btn-toggle-add'),
   btnSync: document.getElementById('btn-sync'),
@@ -57,6 +64,14 @@ const els = {
   alertBox: document.getElementById('alert-box'),
   tasksList: document.getElementById('tasks-list'),
   emptyState: document.getElementById('empty-state'),
+  // Lista de Compras
+  shoppingSection: document.getElementById('shopping-section'),
+  shoppingAddForm: document.getElementById('shopping-add-form'),
+  shoppingInput: document.getElementById('shopping-input'),
+  shoppingList: document.getElementById('shopping-list'),
+  shoppingEmpty: document.getElementById('shopping-empty'),
+  shoppingCountText: document.getElementById('shopping-count-text'),
+  btnClearCompletedShopping: document.getElementById('btn-clear-completed-shopping'),
   tasksCount: document.getElementById('tasks-count'),
   footerTag: document.getElementById('footer-tag'),
   lastSyncTime: document.getElementById('sync-status'),
@@ -85,8 +100,8 @@ const els = {
    INICIALIZAÇÃO
    ========================================================================== */
 function init() {
-  renderAll();
   bindEvents();
+  switchView(state.currentView, true);
 
   const lastSync = localStorage.getItem(STORAGE_KEYS.LAST_SYNC);
   if (lastSync) {
@@ -744,6 +759,180 @@ async function deleteTask(taskId) {
 }
 
 /* ==========================================================================
+   VISÕES: TASKS vs LISTA DE COMPRAS (LOCAL E ISOLADA)
+   ========================================================================== */
+function switchView(viewName, isInitial = false) {
+  state.currentView = viewName === 'shopping' ? 'shopping' : 'tasks';
+  localStorage.setItem(STORAGE_KEYS.VIEW, state.currentView);
+
+  const isShopping = state.currentView === 'shopping';
+
+  if (els.viewTabTasks) {
+    els.viewTabTasks.classList.toggle('active', !isShopping);
+  }
+  if (els.viewTabShopping) {
+    els.viewTabShopping.classList.toggle('active', isShopping);
+  }
+
+  if (isShopping) {
+    if (els.tasksMain) els.tasksMain.classList.add('hidden');
+    if (els.projectsNav) els.projectsNav.classList.add('hidden');
+    if (els.addTaskSection) els.addTaskSection.classList.add('hidden');
+    if (els.shoppingSection) els.shoppingSection.classList.remove('hidden');
+    if (els.btnSync) els.btnSync.classList.add('hidden');
+    if (els.btnToggleAdd) els.btnToggleAdd.classList.add('hidden');
+
+    renderShoppingList();
+    if (!isInitial && els.shoppingInput) {
+      setTimeout(() => els.shoppingInput.focus(), 50);
+    }
+  } else {
+    if (els.shoppingSection) els.shoppingSection.classList.add('hidden');
+    if (els.tasksMain) els.tasksMain.classList.remove('hidden');
+    if (els.projectsNav) els.projectsNav.classList.remove('hidden');
+    if (els.btnSync) els.btnSync.classList.remove('hidden');
+    if (els.btnToggleAdd) els.btnToggleAdd.classList.remove('hidden');
+
+    renderAll();
+    const lastSync = localStorage.getItem(STORAGE_KEYS.LAST_SYNC);
+    if (lastSync) {
+      updateSyncStatus(`sincronizado às ${lastSync}`, true);
+    } else {
+      updateSyncStatus(state.token ? 'nunca sincronizado' : 'modo local', false);
+    }
+  }
+}
+
+function saveShoppingList() {
+  localStorage.setItem(STORAGE_KEYS.SHOPPING, JSON.stringify(state.shoppingList));
+}
+
+function renderShoppingList() {
+  if (!els.shoppingList) return;
+  els.shoppingList.innerHTML = '';
+
+  const items = state.shoppingList || [];
+  const total = items.length;
+  const completed = items.filter(it => it.completed).length;
+  const pending = total - completed;
+
+  if (total === 0) {
+    if (els.shoppingEmpty) els.shoppingEmpty.classList.remove('hidden');
+  } else {
+    if (els.shoppingEmpty) els.shoppingEmpty.classList.add('hidden');
+  }
+
+  if (els.shoppingCountText) {
+    els.shoppingCountText.textContent = `${total} ${total === 1 ? 'item' : 'itens'} (${completed} ${completed === 1 ? 'comprado' : 'comprados'})`;
+  }
+
+  // Atualiza rodapé
+  if (els.tasksCount) {
+    els.tasksCount.textContent = `${pending} ${pending === 1 ? 'a comprar' : 'a comprar'}`;
+  }
+  if (els.footerTag) {
+    els.footerTag.textContent = 'compras';
+    els.footerTag.className = 'footer-tag';
+    els.footerTag.title = 'Lista de compras local';
+    els.footerTag.classList.remove('hidden');
+  }
+  updateSyncStatus('lista local', false);
+
+  items.forEach(item => {
+    const li = document.createElement('li');
+    li.className = `task-item shopping-item ${item.completed ? 'completed' : ''}`.trim();
+
+    const left = document.createElement('div');
+    left.className = 'task-left';
+
+    const checkboxWrap = document.createElement('div');
+    checkboxWrap.className = 'task-checkbox-wrap';
+
+    const checkbox = document.createElement('button');
+    checkbox.type = 'button';
+    checkbox.className = 'task-checkbox';
+    checkbox.setAttribute('aria-label', item.completed ? 'Desmarcar item' : 'Marcar item como comprado');
+    checkbox.textContent = item.completed ? '✓' : '';
+    checkbox.addEventListener('click', () => toggleShoppingItem(item.id));
+
+    checkboxWrap.appendChild(checkbox);
+
+    const contentWrap = document.createElement('div');
+    contentWrap.className = 'task-content-wrap';
+
+    const title = document.createElement('div');
+    title.className = 'task-title';
+    title.textContent = item.text;
+    title.addEventListener('click', () => toggleShoppingItem(item.id));
+    contentWrap.appendChild(title);
+
+    left.appendChild(checkboxWrap);
+    left.appendChild(contentWrap);
+
+    const actions = document.createElement('div');
+    actions.className = 'task-actions';
+
+    const delBtn = document.createElement('button');
+    delBtn.type = 'button';
+    delBtn.className = 'btn-task-action';
+    delBtn.title = 'Remover item';
+    delBtn.setAttribute('aria-label', 'Remover item');
+    delBtn.innerHTML = ICONS.CLOSE;
+    delBtn.addEventListener('click', () => deleteShoppingItem(item.id));
+    actions.appendChild(delBtn);
+
+    li.appendChild(left);
+    li.appendChild(actions);
+
+    els.shoppingList.appendChild(li);
+  });
+}
+
+function handleAddShopping(e) {
+  e.preventDefault();
+  const text = els.shoppingInput.value.trim();
+  if (!text) return;
+
+  const newItem = {
+    id: 'shop-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+    text,
+    completed: false,
+    created_at: new Date().toISOString()
+  };
+
+  state.shoppingList.unshift(newItem);
+  saveShoppingList();
+  renderShoppingList();
+
+  els.shoppingInput.value = '';
+  els.shoppingInput.focus();
+}
+
+function toggleShoppingItem(id) {
+  const item = state.shoppingList.find(it => it.id === id);
+  if (!item) return;
+
+  item.completed = !item.completed;
+  saveShoppingList();
+  renderShoppingList();
+}
+
+function deleteShoppingItem(id) {
+  state.shoppingList = state.shoppingList.filter(it => it.id !== id);
+  saveShoppingList();
+  renderShoppingList();
+}
+
+function clearCompletedShopping() {
+  const completedCount = state.shoppingList.filter(it => it.completed).length;
+  if (completedCount === 0) return;
+
+  state.shoppingList = state.shoppingList.filter(it => !it.completed);
+  saveShoppingList();
+  renderShoppingList();
+}
+
+/* ==========================================================================
    FILTRAGEM E RENDERIZAÇÃO
    ========================================================================== */
 function getTodayIso() {
@@ -1395,10 +1584,30 @@ function bindEvents() {
 
   if (els.footerTag) {
     els.footerTag.addEventListener('click', () => {
-      state.activeFilter = 'all';
-      saveCache();
-      renderAll();
+      if (state.currentView === 'shopping') {
+        switchView('tasks');
+      } else {
+        state.activeFilter = 'all';
+        saveCache();
+        renderAll();
+      }
     });
+  }
+
+  if (els.viewTabTasks) {
+    els.viewTabTasks.addEventListener('click', () => switchView('tasks'));
+  }
+
+  if (els.viewTabShopping) {
+    els.viewTabShopping.addEventListener('click', () => switchView('shopping'));
+  }
+
+  if (els.shoppingAddForm) {
+    els.shoppingAddForm.addEventListener('submit', handleAddShopping);
+  }
+
+  if (els.btnClearCompletedShopping) {
+    els.btnClearCompletedShopping.addEventListener('click', clearCompletedShopping);
   }
 
   els.btnSettings.addEventListener('click', openSettingsModal);

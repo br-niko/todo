@@ -81,19 +81,36 @@ html, body {
 
 .header-title-area {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  align-items: baseline;
+  gap: 6px;
   min-width: 0;
 }
 
-.header h1 {
+.view-switch-btn {
+  background: none;
+  border: none;
+  font-family: inherit;
   font-size: 19px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-weight: 400;
+  color: var(--fg);
+  cursor: pointer;
+  padding: 0 1px 2px 1px;
   text-transform: lowercase;
+  opacity: 0.45;
+  line-height: 1.1;
+  border-bottom: 2px solid transparent;
+}
+
+.view-switch-btn.active {
+  font-weight: 600;
+  opacity: 1;
+  border-bottom: 2px solid var(--fg);
+}
+
+.view-switch-sep {
+  font-size: 16px;
+  opacity: 0.35;
+  user-select: none;
 }
 
 .header-actions {
@@ -748,6 +765,67 @@ textarea:focus {
   border: var(--border-w) dashed var(--border);
   border-radius: var(--radius-md);
   margin-top: 10px;
+}
+
+/* LISTA DE COMPRAS (LOCAL E ISOLADA) */
+.shopping-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.shopping-add-form {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  width: 100%;
+}
+
+.shopping-input {
+  flex: 1;
+  min-height: 34px !important;
+  padding: 6px 10px !important;
+  font-size: 16px !important;
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.shopping-input:focus {
+  outline: var(--border-w) solid var(--fg);
+  outline-offset: 1px;
+}
+
+.shopping-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3px 0 6px 0;
+  border-bottom: var(--border-w) solid var(--border);
+  font-size: 13px;
+  line-height: 1.2;
+}
+
+.shopping-list {
+  margin-top: 2px;
+}
+
+.shopping-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 2px;
+  border-bottom: var(--border-w) solid var(--border);
+  gap: 8px;
+}
+
+.shopping-item.completed .task-title {
+  text-decoration: line-through;
+  opacity: 0.5;
 }
 
 /* RODAPÉ */

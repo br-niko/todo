@@ -853,7 +853,7 @@ function renderLabelsNav() {
 
   // No topo, sempre manter "tarefas"
   if (els.viewTitle) {
-    els.viewTitle.textContent = 'tarefas';
+    els.viewTitle.textContent = 'tasks';
   }
 }
 
@@ -1255,7 +1255,7 @@ function renderTasks() {
     els.tasksList.appendChild(li);
   });
 
-  els.tasksCount.textContent = `${filtered.length} ${filtered.length === 1 ? 'tarefa' : 'tarefas'}`;
+  els.tasksCount.textContent = `${filtered.length} ${filtered.length === 1 ? 'task' : 'tasks'}`;
 
   if (els.footerTag) {
     if (state.activeFilter === 'today') {

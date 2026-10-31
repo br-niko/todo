@@ -10,7 +10,7 @@
       location.replace(location.pathname + '/' + location.search + location.hash);
     }
   </script>
-  <link rel="manifest" href="manifest.json?v=16">
+  <link rel="manifest" href="manifest.json?v=17">
   <link rel="icon" type="image/svg+xml" href="icon.svg">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="apple-touch-icon" href="icon-192.png">
@@ -21,14 +21,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=16">
+  <link rel="stylesheet" href="style.css?v=17">
 </head>
 <body>
   <div id="app" class="container">
     <!-- CABEÇALHO COMPACTO -->
     <header class="header">
       <div class="header-title-area">
-        <h1 id="current-view-title">tarefas</h1>
+        <h1 id="current-view-title">tasks</h1>
       </div>
       <div class="header-actions">
         <button id="btn-toggle-add" class="btn" title="Nova tarefa">+ Nova</button>
@@ -122,7 +122,7 @@
     <!-- RODAPÉ RESUMO -->
     <footer class="footer">
       <div class="footer-left">
-        <span id="tasks-count">0 tarefas</span>
+        <span id="tasks-count">0 tasks</span>
         <span id="footer-tag" class="footer-tag hidden"></span>
       </div>
       <span id="sync-status" class="meta-sync" title="Clique para sincronizar">nunca sincronizado</span>
@@ -215,11 +215,11 @@
     </div>
   </div>
 
-  <script src="app.js?v=16"></script>
+  <script src="app.js?v=17"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=16').then(reg => {
+        navigator.serviceWorker.register('./sw.js?v=17').then(reg => {
           reg.update();
         }).catch(() => {});
       });

@@ -552,7 +552,7 @@ function renderSubtasksModalList() {
     if (sub.description && sub.description.trim()) {
       const subDesc = document.createElement('div');
       subDesc.className = 'task-desc';
-      subDesc.textContent = sub.description;
+      subDesc.innerHTML = renderMarkdown(sub.description);
       contentWrap.appendChild(subDesc);
     }
 
@@ -715,6 +715,12 @@ function renderVerticalDots(container, count) {
 
 async function deleteTask(taskId) {
   const key = String(taskId);
+  const taskToDel = state.tasks.find(t => String(t.id) === key);
+  const taskName = taskToDel ? `"${taskToDel.content}"` : 'esta tarefa';
+  if (!confirm(`Deseja realmente excluir ${taskName}?`)) {
+    return;
+  }
+
   if (state.pendingCompletions.has(key)) {
     clearInterval(state.pendingCompletions.get(key));
     state.pendingCompletions.delete(key);
@@ -905,6 +911,109 @@ function closeAddTaskBox() {
   if (els.taskDescInput) els.taskDescInput.value = '';
 }
 
+function renderMarkdown(rawText) {
+  if (!rawText || !rawText.trim()) return '';
+
+  let text = String(rawText)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  // 1. Extrair blocos de código ``` ... ```
+  const codeBlocks = [];
+  text = text.replace(/```([a-zA-Z0-9_-]*)\n?([\s\S]*?)```/g, (match, lang, code) => {
+    const idx = codeBlocks.length;
+    codeBlocks.push(`<pre class="md-code-block"><code>${code.trim()}</code></pre>`);
+    return `@@CODEBLOCK${idx}@@`;
+  });
+
+  // 2. Extrair código inline `...`
+  const inlineCodes = [];
+  text = text.replace(/`([^`\n]+)`/g, (match, code) => {
+    const idx = inlineCodes.length;
+    inlineCodes.push(`<code class="md-inline-code">${code}</code>`);
+    return `@@INLINECODE${idx}@@`;
+  });
+
+  // 3. Cabeçalhos (# H1 a ###### H6)
+  text = text.replace(/^######\s+(.+)$/gm, '<h6 class="md-h">$1</h6>');
+  text = text.replace(/^#####\s+(.+)$/gm, '<h5 class="md-h">$1</h5>');
+  text = text.replace(/^####\s+(.+)$/gm, '<h4 class="md-h">$1</h4>');
+  text = text.replace(/^###\s+(.+)$/gm, '<h3 class="md-h">$1</h3>');
+  text = text.replace(/^##\s+(.+)$/gm, '<h2 class="md-h">$1</h2>');
+  text = text.replace(/^#\s+(.+)$/gm, '<h1 class="md-h">$1</h1>');
+
+  // 4. Citações e linhas horizontais
+  text = text.replace(/^>\s+(.+)$/gm, '<blockquote class="md-quote">$1</blockquote>');
+  text = text.replace(/^(?:---|\*\*\*|___)\s*$/gm, '<hr class="md-hr">');
+
+  // 5. Checklists (- [ ] ou - [x])
+  text = text.replace(/^[\*\-]\s+\[([ xX])\]\s+(.+)$/gm, (m, check, item) => {
+    const isChecked = check.toLowerCase() === 'x';
+    return `<div class="md-checklist-item"><span class="md-checkbox">${isChecked ? '☑' : '☐'}</span> <span>${item}</span></div>`;
+  });
+
+  // 6. Listas não-ordenadas (* ou -)
+  text = text.replace(/(?:^[\*\-]\s+(.+)$\n?)+/gm, match => {
+    const lines = match.trim().split('\n');
+    const items = lines.map(l => l.replace(/^[\*\-]\s+/, '').trim());
+    return `<ul class="md-ul">${items.map(it => `<li>${it}</li>`).join('')}</ul>\n`;
+  });
+
+  // 7. Listas numeradas (1. 2. etc.)
+  text = text.replace(/(?:^\d+\.\s+(.+)$\n?)+/gm, match => {
+    const lines = match.trim().split('\n');
+    const items = lines.map(l => l.replace(/^\d+\.\s+/, '').trim());
+    return `<ol class="md-ol">${items.map(it => `<li>${it}</li>`).join('')}</ol>\n`;
+  });
+
+  // 8. Links [texto](url)
+  const links = [];
+  text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, label, url) => {
+    const cleanUrl = url.trim();
+    if (/^(https?:\/\/|mailto:|\/)/i.test(cleanUrl)) {
+      const idx = links.length;
+      links.push(`<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer" class="md-link">${label}</a>`);
+      return `@@LINK${idx}@@`;
+    }
+    return label;
+  });
+
+  // Links automáticos (https://...)
+  text = text.replace(/(^|[^\w"\'\/\=])(https?:\/\/[^\s<]+)/g, (match, prefix, url) => {
+    const idx = links.length;
+    links.push(`<a href="${url}" target="_blank" rel="noopener noreferrer" class="md-link">${url}</a>`);
+    return `${prefix}@@LINK${idx}@@`;
+  });
+
+  // 9. Negrito, itálico, tachado
+  text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  text = text.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+  text = text.replace(/(^|[^\*])\*([^*]+)\*([^\*]|$)/g, '$1<em>$2</em>$3');
+  text = text.replace(/(^|[^\w])_([^_]+)_(?=[^\w]|$)/g, '$1<em>$2</em>');
+  text = text.replace(/~~([^~]+)~~/g, '<del>$1</del>');
+
+  // 10. Restaurar links, inline code e code blocks
+  text = text.replace(/@@LINK(\d+)@@/g, (match, idx) => links[idx] || '');
+  text = text.replace(/@@INLINECODE(\d+)@@/g, (match, idx) => inlineCodes[idx] || '');
+  text = text.replace(/@@CODEBLOCK(\d+)@@/g, (match, idx) => codeBlocks[idx] || '');
+
+  // 11. Quebras de linha fora de tags de bloco
+  const blockTags = /(<\/?(?:ul|ol|li|pre|code|blockquote|h[1-6]|hr|div)[^>]*>)/gi;
+  const tokens = text.split(blockTags);
+  let result = '';
+  for (let i = 0; i < tokens.length; i++) {
+    const token = tokens[i];
+    if (blockTags.test(token)) {
+      result += token;
+    } else {
+      result += token.replace(/\n/g, '<br>');
+    }
+  }
+
+  return result.trim().replace(/(?:<br>\s*)+$/g, '');
+}
+
 function renderTasks() {
   const filtered = getFilteredTasks();
   els.tasksList.innerHTML = '';
@@ -950,21 +1059,30 @@ function renderTasks() {
     const taskLabels = Array.isArray(task.labels) ? task.labels : [];
 
     if (isEditing) {
+      li.classList.add('is-editing');
+
       const editForm = document.createElement('form');
       editForm.className = 'task-edit-form';
       editForm.autocomplete = 'off';
 
-      const editRowPrimary = document.createElement('div');
-      editRowPrimary.className = 'edit-row-primary';
-
       const editInput = document.createElement('input');
       editInput.type = 'text';
       editInput.className = 'task-edit-input';
+      editInput.placeholder = 'Nome da tarefa...';
 
       const currentLabelsSuffix = taskLabels.length > 0
         ? ' ' + taskLabels.map(l => `#${l}`).join(' ')
         : '';
       editInput.value = `${task.content}${currentLabelsSuffix}`;
+
+      const editDescInput = document.createElement('textarea');
+      editDescInput.className = 'task-edit-desc';
+      editDescInput.placeholder = 'Descrição (suporta markdown)...';
+      editDescInput.rows = 3;
+      editDescInput.value = task.description || '';
+
+      const editActionsRow = document.createElement('div');
+      editActionsRow.className = 'edit-actions-row';
 
       const editDateInput = document.createElement('input');
       editDateInput.type = 'date';
@@ -972,34 +1090,30 @@ function renderTasks() {
       editDateInput.title = 'Data de vencimento';
       editDateInput.value = task.due?.date ? task.due.date.substring(0, 10) : '';
 
-      const saveBtn = document.createElement('button');
-      saveBtn.type = 'submit';
-      saveBtn.className = 'btn-task-action btn-save';
-      saveBtn.title = 'Salvar alterações';
-      saveBtn.setAttribute('aria-label', 'Salvar alterações');
-      saveBtn.innerHTML = ICONS.CHECK;
+      const editButtonsWrap = document.createElement('div');
+      editButtonsWrap.className = 'edit-buttons-wrap';
 
       const cancelBtn = document.createElement('button');
       cancelBtn.type = 'button';
-      cancelBtn.className = 'btn-task-action';
-      cancelBtn.title = 'Cancelar edição';
-      cancelBtn.setAttribute('aria-label', 'Cancelar edição');
-      cancelBtn.innerHTML = ICONS.CLOSE;
+      cancelBtn.className = 'btn-edit-action btn-edit-cancel';
+      cancelBtn.textContent = 'Cancelar';
+      cancelBtn.title = 'Cancelar edição (Esc)';
       cancelBtn.addEventListener('click', () => {
         state.editingTaskId = null;
         renderAll();
       });
 
-      editRowPrimary.appendChild(editInput);
-      editRowPrimary.appendChild(editDateInput);
-      editRowPrimary.appendChild(saveBtn);
-      editRowPrimary.appendChild(cancelBtn);
+      const saveBtn = document.createElement('button');
+      saveBtn.type = 'submit';
+      saveBtn.className = 'btn-edit-action btn-edit-save';
+      saveBtn.textContent = 'Salvar';
+      saveBtn.title = 'Salvar alterações (Enter ou Ctrl+Enter)';
 
-      const editDescInput = document.createElement('textarea');
-      editDescInput.className = 'task-edit-desc';
-      editDescInput.placeholder = 'Descrição (opcional)...';
-      editDescInput.rows = 2;
-      editDescInput.value = task.description || '';
+      editButtonsWrap.appendChild(cancelBtn);
+      editButtonsWrap.appendChild(saveBtn);
+
+      editActionsRow.appendChild(editDateInput);
+      editActionsRow.appendChild(editButtonsWrap);
 
       editDescInput.addEventListener('keydown', e => {
         if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
@@ -1011,11 +1125,6 @@ function renderTasks() {
         }
       });
 
-      editForm.addEventListener('submit', e => {
-        e.preventDefault();
-        saveEditedTask(task, editInput.value, editDateInput.value, editDescInput.value);
-      });
-
       editInput.addEventListener('keydown', e => {
         if (e.key === 'Escape') {
           state.editingTaskId = null;
@@ -1023,8 +1132,14 @@ function renderTasks() {
         }
       });
 
-      editForm.appendChild(editRowPrimary);
+      editForm.addEventListener('submit', e => {
+        e.preventDefault();
+        saveEditedTask(task, editInput.value, editDateInput.value, editDescInput.value);
+      });
+
+      editForm.appendChild(editInput);
       editForm.appendChild(editDescInput);
+      editForm.appendChild(editActionsRow);
       contentWrap.appendChild(editForm);
 
       setTimeout(() => {
@@ -1040,7 +1155,7 @@ function renderTasks() {
       if (task.description && task.description.trim()) {
         const desc = document.createElement('div');
         desc.className = 'task-desc';
-        desc.textContent = task.description;
+        desc.innerHTML = renderMarkdown(task.description);
         contentWrap.appendChild(desc);
       }
 
@@ -1091,14 +1206,17 @@ function renderTasks() {
       }
     }
 
-    left.appendChild(checkboxWrap);
-    left.appendChild(contentWrap);
-
-    const actions = document.createElement('div');
-    actions.className = 'task-actions';
-
     if (!isEditing) {
-      // Botão de subtarefas perfeitamente centralizado com ícone SVG
+      left.appendChild(checkboxWrap);
+    }
+    left.appendChild(contentWrap);
+    li.appendChild(left);
+
+    // Durante a edição, os botões de ação e excluir NUNCA são renderizados
+    if (!isEditing) {
+      const actions = document.createElement('div');
+      actions.className = 'task-actions';
+
       const subtaskBtn = document.createElement('button');
       subtaskBtn.type = 'button';
       subtaskBtn.className = 'btn-task-action';
@@ -1123,20 +1241,18 @@ function renderTasks() {
         renderAll();
       });
       actions.appendChild(editBtn);
+
+      const delBtn = document.createElement('button');
+      delBtn.type = 'button';
+      delBtn.className = 'btn-task-action';
+      delBtn.title = 'Excluir tarefa';
+      delBtn.setAttribute('aria-label', 'Excluir tarefa');
+      delBtn.innerHTML = ICONS.CLOSE;
+      delBtn.addEventListener('click', () => deleteTask(task.id));
+      actions.appendChild(delBtn);
+
+      li.appendChild(actions);
     }
-
-    const delBtn = document.createElement('button');
-    delBtn.type = 'button';
-    delBtn.className = 'btn-task-action';
-    delBtn.title = 'Excluir tarefa';
-    delBtn.setAttribute('aria-label', 'Excluir tarefa');
-    delBtn.innerHTML = ICONS.CLOSE;
-    delBtn.addEventListener('click', () => deleteTask(task.id));
-
-    actions.appendChild(delBtn);
-
-    li.appendChild(left);
-    li.appendChild(actions);
     els.tasksList.appendChild(li);
   });
 

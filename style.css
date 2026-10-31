@@ -450,41 +450,50 @@ textarea:focus {
 }
 
 /* EDIÇÃO INLINE DA TAREFA */
-.task-edit-form {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+.task-item.is-editing {
+  background-color: var(--bg);
+  padding: 8px 10px;
+}
+
+.task-item.is-editing .task-left {
   width: 100%;
 }
 
-.edit-row-primary {
+.task-item.is-editing .task-checkbox-wrap {
+  display: none !important;
+}
+
+.task-item.is-editing .task-actions {
+  display: none !important;
+}
+
+.task-edit-form {
   display: flex;
-  gap: 5px;
-  align-items: center;
+  flex-direction: column;
+  gap: 6px;
   width: 100%;
 }
 
 .task-edit-input {
-  flex: 1;
-  min-width: 130px;
-  padding: 4px 8px !important;
-  min-height: 30px !important;
-  font-size: 16.5px !important;
-}
-
-.task-edit-date {
-  padding: 3px 6px !important;
-  min-height: 30px !important;
-  font-size: 14.5px !important;
+  width: 100%;
+  padding: 6px 8px !important;
+  min-height: 32px !important;
+  font-size: 16px !important;
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: inherit;
+  box-sizing: border-box;
 }
 
 .task-edit-desc {
   width: 100%;
-  min-height: 42px;
-  max-height: 120px;
-  font-size: 14px !important;
+  min-height: 54px;
+  max-height: 160px;
+  font-size: 13.5px !important;
   line-height: 1.35;
-  padding: 4px 8px !important;
+  padding: 6px 8px !important;
   border: var(--border-w) solid var(--border);
   border-radius: var(--radius-sm);
   background-color: var(--bg);
@@ -494,25 +503,153 @@ textarea:focus {
   resize: vertical;
 }
 
-.task-edit-desc:focus {
+.task-edit-input:focus,
+.task-edit-desc:focus,
+.task-edit-date:focus {
   outline: var(--border-w) solid var(--fg);
   outline-offset: 1px;
 }
 
-/* DESCRIÇÃO DA TAREFA */
+.edit-actions-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.task-edit-date {
+  padding: 4px 6px !important;
+  min-height: 28px !important;
+  font-size: 13px !important;
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.edit-buttons-wrap {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.btn-edit-action {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  min-height: 28px;
+  box-sizing: border-box;
+  line-height: 1;
+}
+
+.btn-edit-cancel {
+  background-color: var(--bg);
+  color: var(--fg);
+  border: var(--border-w) solid var(--border);
+}
+
+.btn-edit-save {
+  background-color: var(--fg);
+  color: var(--bg);
+  border: var(--border-w) solid var(--fg);
+}
+
+/* DESCRIÇÃO DA TAREFA E MARKDOWN */
 .task-desc {
   font-size: 13.5px;
   font-weight: 400;
-  line-height: 1.35;
+  line-height: 1.4;
   color: var(--fg);
   word-break: break-word;
-  white-space: pre-wrap;
-  margin: 1px 0 2px 0;
+  margin: 2px 0 3px 0;
 }
 
 .task-item.completing .task-desc {
   text-decoration: line-through;
   opacity: 0.6;
+}
+
+.task-desc .md-h {
+  margin: 4px 0 2px 0;
+  font-weight: 700;
+  line-height: 1.25;
+}
+.task-desc h1.md-h { font-size: 15.5px; }
+.task-desc h2.md-h { font-size: 14.5px; }
+.task-desc h3.md-h,
+.task-desc h4.md-h,
+.task-desc h5.md-h,
+.task-desc h6.md-h { font-size: 13.5px; }
+
+.task-desc .md-quote {
+  margin: 4px 0;
+  padding-left: 8px;
+  border-left: 2px solid var(--fg);
+  font-style: italic;
+}
+
+.task-desc .md-hr {
+  border: none;
+  border-top: var(--border-w) solid var(--border);
+  margin: 6px 0;
+}
+
+.task-desc .md-ul,
+.task-desc .md-ol {
+  margin: 3px 0 3px 18px;
+  padding: 0;
+}
+
+.task-desc .md-ul li,
+.task-desc .md-ol li {
+  margin: 1px 0;
+}
+
+.task-desc .md-checklist-item {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: 2px 0;
+}
+
+.task-desc .md-checkbox {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.task-desc .md-inline-code {
+  font-family: monospace, monospace;
+  font-size: 12.5px;
+  padding: 1px 4px;
+  border: var(--border-w) solid var(--border);
+  background-color: var(--bg);
+  border-radius: var(--radius-sm);
+}
+
+.task-desc .md-code-block {
+  font-family: monospace, monospace;
+  font-size: 12px;
+  padding: 6px 8px;
+  border: var(--border-w) solid var(--border);
+  background-color: var(--bg);
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+  margin: 4px 0;
+  white-space: pre;
+}
+
+.task-desc .md-link {
+  color: var(--fg);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-weight: 500;
 }
 
 /* METADADOS E TAGS DA TAREFA (Pequenas com retângulo fino em volta) */

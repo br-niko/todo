@@ -1693,6 +1693,118 @@ function bindEvents() {
       syncWithTodoist();
     }
   });
+
+  setupAutoClosePairs();
+}
+
+function setupAutoClosePairs() {
+  const OPEN_TO_CLOSE = { '(': ')', '[': ']' };
+  const CLOSING_CHARS = new Set([')', ']']);
+
+  function isEligibleField(el) {
+    if (!el) return false;
+    if (el.id === 'api-token-input' || el.readOnly || el.disabled) return false;
+    if (el.tagName === 'TEXTAREA') return true;
+    if (el.tagName === 'INPUT') {
+      const type = (el.type || 'text').toLowerCase();
+      return type === 'text' || type === 'search';
+    }
+    return false;
+  }
+
+  function insertPair(el, openChar, closeChar) {
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+    if (start == null || end == null) return false;
+
+    const val = el.value;
+    const selected = val.slice(start, end);
+    el.value = val.slice(0, start) + openChar + selected + closeChar + val.slice(end);
+
+    if (selected.length > 0) {
+      el.setSelectionRange(start + 1, end + 1);
+    } else {
+      el.setSelectionRange(start + 1, start + 1);
+    }
+    return true;
+  }
+
+  document.addEventListener('keydown', e => {
+    const el = e.target;
+    if (!isEligibleField(el)) return;
+    if (e.ctrlKey || e.metaKey || e.altKey || e.isComposing) return;
+
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+    if (start == null || end == null) return;
+
+    // 1. Abrir ( ou [ -> fecha automaticamente e posiciona o cursor dentro
+    if (OPEN_TO_CLOSE[e.key]) {
+      e.preventDefault();
+      insertPair(el, e.key, OPEN_TO_CLOSE[e.key]);
+      return;
+    }
+
+    // 2. Digitar ) ou ] logo antes do mesmo fechamento -> apenas avança o cursor
+    if (CLOSING_CHARS.has(e.key) && start === end && el.value[start] === e.key) {
+      e.preventDefault();
+      el.setSelectionRange(start + 1, start + 1);
+      return;
+    }
+
+    // 3. Backspace dentro de um par vazio () ou [] -> apaga ambos
+    if (e.key === 'Backspace' && start === end && start > 0) {
+      const prev = el.value[start - 1];
+      const next = el.value[start];
+      if (OPEN_TO_CLOSE[prev] === next) {
+        e.preventDefault();
+        el.value = el.value.slice(0, start - 1) + el.value.slice(start + 1);
+        el.setSelectionRange(start - 1, start - 1);
+      }
+    }
+  });
+
+  // Suporte a teclados virtuais móveis (iOS / Android / E-Ink)
+  document.addEventListener('beforeinput', e => {
+    const el = e.target;
+    if (!isEligibleField(el)) return;
+    if (e.inputType !== 'insertText' || !e.data || e.data.length !== 1) return;
+
+    const ch = e.data;
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+    if (start == null || end == null) return;
+
+    if (OPEN_TO_CLOSE[ch] && e.cancelable) {
+      e.preventDefault();
+      insertPair(el, ch, OPEN_TO_CLOSE[ch]);
+      return;
+    }
+
+    if (CLOSING_CHARS.has(ch) && start === end && el.value[start] === ch && e.cancelable) {
+      e.preventDefault();
+      el.setSelectionRange(start + 1, start + 1);
+    }
+  });
+
+  // Fallback para IMEs móveis onde beforeinput não é cancelável (ex: Gboard Android)
+  document.addEventListener('input', e => {
+    const el = e.target;
+    if (!isEligibleField(el)) return;
+    if (e.inputType !== 'insertText' || !e.data || e.data.length !== 1) return;
+
+    const ch = e.data;
+    if (!OPEN_TO_CLOSE[ch]) return;
+
+    const pos = el.selectionStart;
+    if (pos == null || pos < 1) return;
+
+    const val = el.value;
+    if (val[pos - 1] === ch) {
+      el.value = val.slice(0, pos) + OPEN_TO_CLOSE[ch] + val.slice(pos);
+      el.setSelectionRange(pos, pos);
+    }
+  });
 }
 
 function escapeHtml(str) {
